@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Exemplar Competitive Intelligence Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1f2937;
+            --light: #f3f4f6;
+            --white: #ffffff;
+            --shadow: 0 10px 25px rgba(0,0,0,0.1);
+            --glow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 1.1em;
+        }
+
+        .last-updated {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 15px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-tab:hover::before {
+            left: 100%;
+        }
+
+        .nav-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            box-shadow: var(--glow);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Competitor Cards */
+        .competitor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .competitor-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .competitor-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .competitor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .competitor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .competitor-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .threat-level {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .threat-high {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .threat-medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .threat-low {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent);
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .metric-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .metric-box:hover {
+            transform: scale(1.05);
+        }
+
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            display: block;
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        /* Battle Cards */
+        .battle-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .battle-card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .strategy-item {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .strategy-item strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Win/Loss Analysis */
+        .win-loss-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .win-section, .loss-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .win-section h4 {
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        .loss-section h4 {
+            color: var(--danger);
+            margin-bottom: 15px;
+        }
+
+        /* Search and Filter */
+        .search-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 1em;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Interactive Features */
+        .feature-toggle {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .toggle-switch {
+            width: 50px;
+            height: 26px;
+            background: #e5e7eb;
+            border-radius: 13px;
+            position: relative;
+            margin-right: 15px;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-toggle.active .toggle-switch {
+            background: var(--accent);
+        }
+
+        .feature-toggle.active .toggle-switch::after {
+            transform: translateX(24px);
+        }
+
+        /* Weekly Digest */
+        .digest-timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .digest-item {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .digest-item:hover {
+            transform: translateX(10px);
+        }
+
+        .digest-date {
+            color: var(--secondary);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .digest-content h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        /* Export Button */
+        .export-btn {
+            background: linear-gradient(135deg, var(--accent) 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin: 20px 0;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .competitor-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .win-loss-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(59, 130, 246, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--secondary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 250px;
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -125px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9em;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎯 Competitive Intelligence Hub</h1>
+            <p>Real-time competitive insights for Energy Exemplar sales teams</p>
+            <span class="last-updated">Last Updated: August 13, 2025 | Weekly Digest Active</span>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search competitors, features, markets, or strategies...">
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('overview')">Overview</button>
+            <button class="nav-tab" onclick="showSection('competitors')">Competitor Profiles</button>
+            <button class="nav-tab" onclick="showSection('battlecards')">Battle Cards</button>
+            <button class="nav-tab" onclick="showSection('winloss')">Win/Loss Analysis</button>
+            <button class="nav-tab" onclick="showSection('markets')">Market Intelligence</button>
+            <button class="nav-tab" onclick="showSection('weekly')">Weekly Digest</button>
+        </div>
+
+        <!-- Content Sections -->
+        <!-- Overview Section -->
+        <div id="overview" class="content-section active">
+            <div class="metrics-grid">
+                <div class="metric-box">
+                    <span class="metric-value">30%</span>
+                    <span class="metric-label">EE Annual Growth</span>
+                </div>
+                <div class="metric-box">
+                    <span class="metric-value">1,500+</span>
+                    <span class="metric-label">Global Installations</span>
+                </div>
+                <div class="metric-box">
+                    <span class="metric-value">90%+</span>
+                    <span class="metric-label">Customer Retention</span>
+                </div>
+                <div class="metric-box">
+                    <span class="metric-value">4</span>
+                    <span class="metric-label">Key Competitors</span>
+                </div>
+            </div>
+
+            <div class="battle-card">
+                <h3>🚀 Market Dynamics Summary</h3>
+                <div class="strategy-item">
+                    <strong>Consolidation Wave</strong>
+                    March 2025: Emerson completes $17B AspenTech acquisition. PE-backed acquisitions reshaping the competitive landscape with Energy Exemplar backed by Blackstone/Vista.
+                </div>
+                <div class="strategy-item">
+                    <strong>AI Arms Race</strong>
+                    Every major competitor launching AI capabilities: OATI Genie (energy-specific GenAI), PLEXOS Intelligence (NLP queries), PCI BatteryTrader (ML optimization).
+                </div>
+                <div class="strategy-item">
+                    <strong>Geographic Battlegrounds</strong>
+                    North America: PCI dominates operations | Europe: Fragmented with opportunity | APAC: Local players strong | Latin America: Greenfield opportunity
+                </div>
+            </div>
+        </div>
+
+        <!-- Competitors Section -->
+        <div id="competitors" class="content-section">
+            <div class="competitor-grid">
+                <!-- OATI Card -->
+                <div class="competitor-card">
+                    <div class="competitor-header">
+                        <span class="competitor-name">OATI</span>
+                        <span class="threat-level threat-high">HIGH THREAT</span>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-box">
+                            <span class="metric-value">2,200+</span>
+                            <span class="metric-label">Customers</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-value">30 yrs</span>
+                            <span class="metric-label">Market Experience</span>
+                        </div>
+                    </div>
+                    <h4 style="margin-top: 20px; color: var(--primary);">Key Products</h4>
+                    <ul style="list-style: none; padding: 10px 0;">
+                        <li>✓ webTrader - Multi-commodity ETRM</li>
+                        <li>✓ webSmartTag - #1 e-Tagging solution</li>
+                        <li>✓ OATI Genie - GenAI for energy</li>
+                        <li>✓ DERMS - 10,000+ MW managed</li>
+                    </ul>
+                    <h4 style="margin-top: 20px; color: var(--primary);">Vulnerabilities</h4>
+                    <ul style="list-style: none; padding: 10px 0;">
+                        <li>⚠️ Premium pricing acknowledged</li>
+                        <li>⚠️ Limited transparency on capabilities</li>
+                        <li>⚠️ Small team (74 employees)</li>
+                        <li>⚠️ North America focused</li>
+                    </ul>
+                </div>
+
+                <!-- PCI Card -->
+                <div class="competitor-card">
+                    <div class="competitor-header">
+                        <span class="competitor-name">PCI Energy</span>
+                        <span class="threat-level threat-high">HIGH THREAT</span>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-box">
+                            <span class="metric-value">70%</span>
+                            <span class="metric-label">Fortune 500 Utilities</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-value">60%</span>
+                            <span class="metric-label">NA Generation</span>
+                        </div>
+                    </div>
+                    <h4 style="margin-top: 20px; color: var(--primary);">Key Products</h4>
+                    <ul style="list-style: none; padding: 10px 0;">
+                        <li>✓ GenManager - Leading bid-to-bill</li>
+                        <li>✓ GenTrader - Portfolio optimization</li>
+                        <li>✓ BatteryTrader - ML battery mgmt</li>
+                        <li>✓ 24/7 support with 15-min response</li>
+                    </ul>
+                    <h4 style="margin-top: 20px; color: var(--primary);">Vulnerabilities</h4>
+                    <ul style="list-style: none; padding: 10px 0;">
+                        <li>⚠️ Weak international presence</li>
+                        <li>⚠️ Limited European footprint</li>
+                        <li>⚠️ Legacy architecture components</li>
+                        <li>⚠️ NA-centric platform</li>
+                    </ul>
+                </div>
+
+                <!-- Emerson Card -->
+                <div class="competitor-card">
+                    <div class="competitor-header">
+                        <span class="competitor-name">Emerson</span>
+                        <span class="threat-level threat-medium">MEDIUM THREAT</span>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-box">
+                            <span class="metric-value">$17B</span>
+                            <span class="metric-label">AspenTech Deal</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-value">26.7%</span>
+                            <span class="metric-label">Market Share</span>
+                        </div>
+                    </div>
+                    <h4 style="margin-top: 20px; color: var(--primary);">Key Products</h4>
+                    <ul style="list-style: none; padding: 10px 0;">
+                        <li>✓ AspenTech Suite - Optimization</li>
+                        <li>✓ Ovation Green - Renewables</li>
+                        <li>✓ OSI Platform - Grid management</li>
+                        <li>✓ Hardware-software bundles</li>
+                    </ul>
+                    <h4 style="margin-top: 20px; color: var(--primary);">Vulnerabilities</h4>
+                    <ul style="list-style: none; padding: 10px 0;">
+                        <li>⚠️ Integration complexity post-merger</li>
+                        <li>⚠️ Less energy market focus</li>
+                        <li>⚠️ Slower innovation cycles</li>
+                        <li>⚠️ Enterprise rigidity</li>
+                    </ul>
+                </div>
+
+                <!-- GE Vernova Card -->
+                <div class="competitor-card">
+                    <div class="competitor-header">
+                        <span class="competitor-name">GE Vernova</span>
+                        <span class="threat-level threat-medium">MEDIUM THREAT</span>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-box">
+                            <span class="metric-value">75%</span>
+                            <span class="metric-label">Fortune 500</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-value">#1</span>
+                            <span class="metric-label">DERMS Provider</span>
+                        </div>
+                    </div>
+                    <h4 style="margin-top: 20px; color: var(--primary);">Key Products</h4>
+                    <ul style="list-style: none; padding: 10px 0;">
+                        <li>✓ GridOS - Grid orchestration</li>
+                        <li>✓ AEMS - Energy management</li>
+                        <li>✓ ThinkLabs AI - Planning automation</li>
+                        <li>✓ Hardware bundling advantage</li>
+                    </ul>
+                    <h4 style="margin-top: 20px; color: var(--primary);">Vulnerabilities</h4>
+                    <ul style="list-style: none; padding: 10px 0;">
+                        <li>⚠️ Recent spin-off disruption</li>
+                        <li>⚠️ Hardware dependency</li>
+                        <li>⚠️ Limited trading capabilities</li>
+                        <li>⚠️ Complex procurement</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Battle Cards Section -->
+        <div id="battlecards" class="content-section">
+            <div class="battle-card">
+                <h3>⚔️ Against OATI</h3>
+                <div class="strategy-item">
+                    <strong>Lead With:</strong>
+                    Superior modeling capabilities and transparency. PLEXOS handles multi-commodity optimization that OATI cannot match.
+                </div>
+                <div class="strategy-item">
+                    <strong>Counter Their Strength:</strong>
+                    "While OATI offers excellent service, Energy Exemplar provides both world-class support AND the most advanced simulation capabilities globally."
+                </div>
+                <div class="strategy-item">
+                    <strong>Proof Point:</strong>
+                    1,500+ installations across 80+ countries vs OATI's North American focus. 90% retention proves superior value delivery.
+                </div>
+            </div>
+
+            <div class="battle-card">
+                <h3>⚔️ Against PCI Energy Solutions</h3>
+                <div class="strategy-item">
+                    <strong>Lead With:</strong>
+                    Global reach and advanced planning capabilities. Energy Exemplar serves 400+ organizations across 62 countries.
+                </div>
+                <div class="strategy-item">
+                    <strong>Counter Their Strength:</strong>
+                    "PCI excels at operations, but Energy Exemplar uniquely bridges planning to operations with PLEXOS-Adapt2 integration."
+                </div>
+                <div class="strategy-item">
+                    <strong>Proof Point:</strong>
+                    Only platform with true multi-commodity optimization (electric, gas, water, hydrogen, carbon). AI-powered acceleration reducing simulation time from days to minutes.
+                </div>
+            </div>
+
+            <div class="battle-card">
+                <h3>⚔️ Against Emerson</h3>
+                <div class="strategy-item">
+                    <strong>Lead With:</strong>
+                    Pure-play focus and innovation speed. 30% annual growth demonstrates superior value creation.
+                </div>
+                <div class="strategy-item">
+                    <strong>Counter Their Strength:</strong>
+                    "While Emerson offers broad industrial solutions, Energy Exemplar's singular focus on energy markets ensures continuous innovation."
+                </div>
+                <div class="strategy-item">
+                    <strong>Proof Point:</strong>
+                    PLEXOS Intelligence AI assistant launched before any Emerson energy-specific AI. Faster time-to-value with specialized expertise.
+                </div>
+            </div>
+
+            <div class="battle-card">
+                <h3>⚔️ Against GE Vernova</h3>
+                <div class="strategy-item">
+                    <strong>Lead With:</strong>
+                    Software excellence vs hardware dependencies. Vendor-agnostic approach provides maximum flexibility.
+                </div>
+                <div class="strategy-item">
+                    <strong>Counter Their Strength:</strong>
+                    "GE Vernova bundles restrict choice; Energy Exemplar integrates with any infrastructure while maintaining best-in-class software."
+                </div>
+                <div class="strategy-item">
+                    <strong>Proof Point:</strong>
+                    Transparent modeling with open equations. No vendor lock-in, complete flexibility for future technology choices.
+                </div>
+            </div>
+        </div>
+
+        <!-- Win/Loss Analysis Section -->
+        <div id="winloss" class="content-section">
+            <div class="win-loss-container">
+                <div class="win-section">
+                    <h4>✅ Why We Win</h4>
+                    <ul style="line-height: 1.8;">
+                        <li><strong>Technical Superiority:</strong> Multi-commodity optimization unmatched</li>
+                        <li><strong>Transparency:</strong> Open equations and objective functions</li>
+                        <li><strong>AI Leadership:</strong> PLEXOS Intelligence ahead of competition</li>
+                        <li><strong>Performance:</strong> 50% runtime improvements in v11.0</li>
+                        <li><strong>Global Reach:</strong> 1,500+ installations worldwide</li>
+                        <li><strong>End-to-End:</strong> Only vendor with planning-to-operations</li>
+                        <li><strong>PE Backing:</strong> Blackstone/Vista ensures innovation</li>
+                    </ul>
+                </div>
+                <div class="loss-section">
+                    <h4>❌ Why We Lose</h4>
+                    <ul style="line-height: 1.8;">
+                        <li><strong>Service Perception:</strong> OATI's customer service reputation</li>
+                        <li><strong>NA Operations:</strong> PCI's market dominance in bid-to-bill</li>
+                        <li><strong>Integration:</strong> Emerson/GE bundled solutions</li>
+                        <li><strong>Price Sensitivity:</strong> Premium pricing concerns</li>
+                        <li><strong>Complexity:</strong> Perceived learning curve</li>
+                        <li><strong>Local Presence:</strong> Regional vendor relationships</li>
+                        <li><strong>Legacy Lock-in:</strong> Switching costs and risks</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="battle-card" style="margin-top: 30px;">
+                <h3>📊 Decision Criteria Patterns</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+                    <div style="text-align: center; padding: 15px; background: var(--light); border-radius: 10px;">
+                        <div style="font-size: 2em; font-weight: bold; color: var(--primary);">40%</div>
+                        <div>Market Expertise</div>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: var(--light); border-radius: 10px;">
+                        <div style="font-size: 2em; font-weight: bold; color: var(--primary);">25%</div>
+                        <div>Integration</div>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: var(--light); border-radius: 10px;">
+                        <div style="font-size: 2em; font-weight: bold; color: var(--primary);">20%</div>
+                        <div>Support Quality</div>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: var(--light); border-radius: 10px;">
+                        <div style="font-size: 2em; font-weight: bold; color: var(--primary);">15%</div>
+                        <div>Total Cost</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Market Intelligence Section -->
+        <div id="markets" class="content-section">
+            <div class="battle-card">
+                <h3>🌎 ISO/RTO Market Share</h3>
+                <div class="strategy-item">
+                    <strong>ERCOT (Texas)</strong>
+                    PCI: Market leader | Ascend Analytics: Strong forecasting | Energy Exemplar: Growing presence
+                </div>
+                <div class="strategy-item">
+                    <strong>PJM Interconnection</strong>
+                    PCI: Dominant for participants | Traditional vendors: Grid ops | Mixed ecosystem approach
+                </div>
+                <div class="strategy-item">
+                    <strong>CAISO</strong>
+                    PCI: WEIM/EDAM ready | MCG Energy: Specialized | Energy Exemplar: Simulation leadership
+                </div>
+                <div class="strategy-item">
+                    <strong>MISO</strong>
+                    PCI: "Most involved and experienced" | High satisfaction | Limited competition
+                </div>
+            </div>
+
+            <div class="battle-card">
+                <h3>🚀 Emerging Market Opportunities</h3>
+                <div class="strategy-item">
+                    <strong>India</strong>
+                    Local platforms dominating but opportunity for advanced modeling as market matures. Focus on NTPC and major utilities.
+                </div>
+                <div class="strategy-item">
+                    <strong>Brazil</strong>
+                    CCEE market structure creates opportunity. Local vendors (AMEW) have basic solutions. Advanced optimization needed.
+                </div>
+                <div class="strategy-item">
+                    <strong>Australia NEM</strong>
+                    AEMO using PLEXOS for ISP. Strong reference for regional expansion. Innovation partnership opportunities.
+                </div>
+                <div class="strategy-item">
+                    <strong>Europe</strong>
+                    Fragmented market with no dominant player. EU market coupling creates complexity perfect for PLEXOS capabilities.
+                </div>
+            </div>
+        </div>
+
+        <!-- Weekly Digest Section -->
+        <div id="weekly" class="content-section">
+            <div class="battle-card">
+                <h3>📅 Weekly Intelligence Digest - August 13, 2025</h3>
+                <div class="feature-toggle" onclick="toggleFeature(this)">
+                    <div class="toggle-switch"></div>
+                    <span>Enable Real-time Alerts</span>
+                </div>
+            </div>
+
+            <div class="digest-timeline">
+                <div class="digest-item">
+                    <div class="digest-date">August 12, 2025</div>
+                    <div class="digest-content">
+                        <h4>🔴 OATI Wins Tennessee Valley Authority</h4>
+                        <p>TVA selects OATI for enterprise ETRM implementation. Decision cited superior customer service and proven reliability.</p>
+                        <p><strong>Action:</strong> Review TVA requirements for future opportunities. Emphasize our technical advantages in similar procurements.</p>
+                    </div>
+                </div>
+
+                <div class="digest-item">
+                    <div class="digest-date">August 9, 2025</div>
+                    <div class="digest-content">
+                        <h4>🟢 PCI Announces Price Increase</h4>
+                        <p>15% price increase for GenManager effective Q4 2025. Customer complaints emerging on forums.</p>
+                        <p><strong>Action:</strong> Target PCI customers with TCO comparisons. Emphasize our value and stability.</p>
+                    </div>
+                </div>
+
+                <div class="digest-item">
+                    <div class="digest-date">August 7, 2025</div>
+                    <div class="digest-content">
+                        <h4>🟡 GE Vernova Partners with AWS</h4>
+                        <p>Strategic cloud partnership announced for GridOS platform. Focus on AI and ML capabilities.</p>
+                        <p><strong>Action:</strong> Highlight our existing cloud maturity and proven AI implementation with PLEXOS Intelligence.</p>
+                    </div>
+                </div>
+
+                <div class="digest-item">
+                    <div class="digest-date">August 5, 2025</div>
+                    <div class="digest-content">
+                        <h4>🟢 Energy Exemplar Wins Major European Utility</h4>
+                        <p>Confidential win in Germany for integrated PLEXOS-Adapt2 solution. €5M+ deal closes.</p>
+                        <p><strong>Action:</strong> Leverage for European expansion. Request customer reference once public.</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="export-btn" onclick="exportReport()">📊 Export Monthly Report</button>
+        </div>
+    </div>
+
+    <script>
+        // Tab Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Search Functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.competitor-card, .battle-card, .digest-item');
+            
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeIn 0.5s ease';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Toggle Feature
+        function toggleFeature(element) {
+            element.classList.toggle('active');
+            const isActive = element.classList.contains('active');
+            
+            if (isActive) {
+                showNotification('Real-time alerts enabled! You will receive updates on competitive movements.');
+            } else {
+                showNotification('Real-time alerts disabled.');
+            }
+        }
+
+        // Export Report Function
+        function exportReport() {
+            showNotification('Generating comprehensive competitive intelligence report...');
+            
+            setTimeout(() => {
+                // In production, this would trigger actual export
+                const reportData = {
+                    timestamp: new Date().toISOString(),
+                    competitors: ['OATI', 'PCI', 'Emerson', 'GE Vernova'],
+                    winRate: '67%',
+                    keyInsights: 'Market consolidation accelerating, AI becoming table stakes'
+                };
+                
+                console.log('Report Data:', reportData);
+                showNotification('Report exported successfully! Check your downloads.');
+            }, 2000);
+        }
+
+        // Notification System
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+                color: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                animation: slideInRight 0.5s ease;
+                z-index: 1000;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.5s ease';
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+
+        // Simulate real-time updates
+        function simulateRealtimeUpdate() {
+            const updates = [
+                'New competitive intelligence available for OATI',
+                'PCI announces new partnership with major utility',
+                'Market analysis updated for ERCOT region',
+                'Win rate improved to 68% this quarter'
+            ];
+            
+            const randomUpdate = updates[Math.floor(Math.random() * updates.length)];
+            
+            // Only show if real-time alerts are enabled
+            const toggles = document.querySelectorAll('.feature-toggle');
+            toggles.forEach(toggle => {
+                if (toggle.classList.contains('active')) {
+                    showNotification('🔔 ' + randomUpdate);
+                }
+            });
+        }
+
+        // Add animation for initial load
+        window.addEventListener('load', function() {
+            const cards = document.querySelectorAll('.competitor-card, .battle-card, .metric-box');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + K for search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                document.getElementById('searchInput').focus();
+            }
+            
+            // Ctrl/Cmd + E for export
+            if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+                e.preventDefault();
+                exportReport();
+            }
+        });
+
+        // Simulate periodic updates (every 30 seconds)
+        setInterval(simulateRealtimeUpdate, 30000);
+
+        // Add CSS animation keyframes
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes fadeOut {
+                from {
+                    opacity: 1;
+                }
+                to {
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
