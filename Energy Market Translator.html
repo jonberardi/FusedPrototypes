@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Market Translator Pro | Fused for Energy Exemplar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f1419 0%, #1a2332 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin: 40px 0 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.2), rgba(16, 185, 129, 0.2));
+            transition: width 0.3s ease;
+        }
+
+        .nav-tab:hover::before {
+            width: 100%;
+        }
+
+        .nav-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+            border-color: transparent;
+            color: white;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .search-container {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .term-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .term-card {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .term-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #3b82f6, #10b981);
+            border-radius: 16px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .term-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .term-card:hover::before {
+            opacity: 1;
+        }
+
+        .term-card h3 {
+            color: #3b82f6;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .term-definition {
+            color: #cbd5e1;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .value-metric {
+            background: rgba(16, 185, 129, 0.2);
+            border-left: 3px solid #10b981;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .value-metric strong {
+            color: #10b981;
+        }
+
+        .stakeholder-tabs {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .stakeholder-tab {
+            padding: 8px 16px;
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .stakeholder-tab:hover,
+        .stakeholder-tab.active {
+            background: #3b82f6;
+            transform: scale(1.05);
+        }
+
+        .translation-content {
+            display: none;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            margin-top: 15px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .translation-content.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: #ef4444;
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .competitive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .competitive-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .competitive-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.2);
+        }
+
+        .competitive-card h4 {
+            color: #ef4444;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .competitive-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .competitive-card li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+            color: #cbd5e1;
+        }
+
+        .competitive-card li:last-child {
+            border-bottom: none;
+        }
+
+        .case-study-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+            border: 2px solid rgba(16, 185, 129, 0.4);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .case-study-card h3 {
+            color: #10b981;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .case-study-metric {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid #3b82f6;
+            border-radius: 20px;
+            padding: 8px 16px;
+            margin: 5px;
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        .quick-value {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .value-card {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .value-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+
+        .value-card h4 {
+            color: #3b82f6;
+            margin-bottom: 10px;
+        }
+
+        .value-card .amount {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #10b981;
+        }
+
+        .calculator-section {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .calculator-input {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            margin-bottom: 8px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .input-group input, .input-group select {
+            padding: 10px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .results-display {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid #10b981;
+            border-radius: 12px;
+        }
+
+        .results-display.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #10b981;
+            margin-top: 10px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .battle-card {
+            background: rgba(239, 68, 68, 0.05);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .battle-card h3 {
+            color: #ef4444;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        .vs-comparison {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 20px;
+            align-items: start;
+            margin: 20px 0;
+        }
+
+        .vs-section {
+            padding: 20px;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 12px;
+        }
+
+        .vs-section.ee {
+            border: 2px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .vs-section.competitor {
+            border: 2px solid rgba(239, 68, 68, 0.4);
+        }
+
+        .vs-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .term-grid { grid-template-columns: 1fr; }
+            .modal-content { padding: 20px; }
+            .vs-comparison { grid-template-columns: 1fr; }
+            .vs-divider { margin: 20px 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Energy Market Translator Pro</h1>
+            <p class="subtitle">Transform Technical Complexity into Business Value | Fused for Energy Exemplar</p>
+        </header>
+
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="switchTab('terms')">Key Terms</div>
+            <div class="nav-tab" onclick="switchTab('stakeholders')">By Stakeholder</div>
+            <div class="nav-tab" onclick="switchTab('competitive')">Competitive Intel</div>
+            <div class="nav-tab" onclick="switchTab('cases')">Case Studies</div>
+            <div class="nav-tab" onclick="switchTab('products')">Product Value</div>
+            <div class="nav-tab" onclick="switchTab('calculator')">ROI Calculator</div>
+            <div class="nav-tab" onclick="switchTab('objections')">Objection Handling</div>
+        </div>
+
+        <!-- Key Terms Section -->
+        <div id="terms" class="content-section active">
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Search energy market terms..." onkeyup="searchTerms(this.value)">
+            </div>
+            <div class="term-grid" id="termsGrid">
+                <!-- Terms will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <!-- Stakeholder Section -->
+        <div id="stakeholders" class="content-section">
+            <h2 style="margin-bottom: 30px;">Value Narratives by Stakeholder</h2>
+            <div class="term-grid">
+                <div class="term-card" onclick="openStakeholderModal('pe')">
+                    <h3>Private Equity / Investors</h3>
+                    <p class="term-definition">IRR, EBITDA multiples, portfolio optimization</p>
+                    <div class="value-metric">
+                        <strong>Key Focus:</strong> 10-15% EBITDA improvement in 90 days
+                    </div>
+                </div>
+                <div class="term-card" onclick="openStakeholderModal('utility')">
+                    <h3>Utility Executives</h3>
+                    <p class="term-definition">Rate cases, customer bills, regulatory compliance</p>
+                    <div class="value-metric">
+                        <strong>Key Focus:</strong> $50-100M customer savings
+                    </div>
+                </div>
+                <div class="term-card" onclick="openStakeholderModal('renewable')">
+                    <h3>Renewable Developers</h3>
+                    <p class="term-definition">LCOE, capacity factors, PPAs, interconnection</p>
+                    <div class="value-metric">
+                        <strong>Key Focus:</strong> 15-20% improved project NPV
+                    </div>
+                </div>
+                <div class="term-card" onclick="openStakeholderModal('trading')">
+                    <h3>Trading Organizations</h3>
+                    <p class="term-definition">Spreads, basis risk, VaR, position limits</p>
+                    <div class="value-metric">
+                        <strong>Key Focus:</strong> 20-30% better returns
+                    </div>
+                </div>
+                <div class="term-card" onclick="openStakeholderModal('iso')">
+                    <h3>System Operators (ISO/RTO)</h3>
+                    <p class="term-definition">Grid reliability, market efficiency, NERC compliance</p>
+                    <div class="value-metric">
+                        <strong>Key Focus:</strong> 99.99% reliability, efficient markets
+                    </div>
+                </div>
+                <div class="term-card" onclick="openStakeholderModal('regulator')">
+                    <h3>Regulators & Policy Makers</h3>
+                    <p class="term-definition">Rate cases, resource adequacy, consumer protection</p>
+                    <div class="value-metric">
+                        <strong>Key Focus:</strong> Fair rates, grid modernization
+                    </div>
+                </div>
+                <div class="term-card" onclick="openStakeholderModal('consultant')">
+                    <h3>Consultants & Advisors</h3>
+                    <p class="term-definition">Market analysis, due diligence, strategic planning</p>
+                    <div class="value-metric">
+                        <strong>Key Focus:</strong> Data-driven insights, validated models
+                    </div>
+                </div>
+                <div class="term-card" onclick="openStakeholderModal('finance')">
+                    <h3>Financial Institutions</h3>
+                    <p class="term-definition">Project finance, M&A, risk assessment</p>
+                    <div class="value-metric">
+                        <strong>Key Focus:</strong> Investment validation, risk quantification
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Competitive Intelligence Section -->
+        <div id="competitive" class="content-section">
+            <h2 style="margin-bottom: 30px;">Competitive Intelligence & Battle Cards</h2>
+            <div class="term-grid">
+                <div class="term-card" onclick="openCompetitiveModal('oati')">
+                    <h3>vs. OATI</h3>
+                    <p class="term-definition">2,200+ customers, legacy leader in North America</p>
+                    <div class="value-metric">
+                        <strong>Win Strategy:</strong> Modern cloud architecture & global reach
+                    </div>
+                </div>
+                <div class="term-card" onclick="openCompetitiveModal('pci')">
+                    <h3>vs. PCI Energy Solutions</h3>
+                    <p class="term-definition">70% of Fortune 500 utilities, cloud-native</p>
+                    <div class="value-metric">
+                        <strong>Win Strategy:</strong> Multi-commodity integration beyond power
+                    </div>
+                </div>
+                <div class="term-card" onclick="openCompetitiveModal('ge')">
+                    <h3>vs. GE Vernova</h3>
+                    <p class="term-definition">Grid engineering focus, hardware integration</p>
+                    <div class="value-metric">
+                        <strong>Win Strategy:</strong> Pure software flexibility & innovation speed
+                    </div>
+                </div>
+                <div class="term-card" onclick="openCompetitiveModal('ion')">
+                    <h3>vs. ION Commodities</h3>
+                    <p class="term-definition">1,200+ clients, derivatives trading focus</p>
+                    <div class="value-metric">
+                        <strong>Win Strategy:</strong> Physical-financial integration & ease of use
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Case Studies Section -->
+        <div id="cases" class="content-section">
+            <h2 style="margin-bottom: 30px;">Customer Success Stories</h2>
+            
+            <div class="case-study-card">
+                <h3>Xcel Energy - Multi-Market Operations</h3>
+                <p style="color: #cbd5e1; margin-bottom: 20px;">
+                    <strong>Challenge:</strong> Managing operations across MISO, SPP, and Western EIM with legacy systems while pursuing 100% carbon-free electricity by 2050.
+                </p>
+                <p style="color: #cbd5e1; margin-bottom: 20px;">
+                    <strong>Solution:</strong> Implemented Adapt2 Bid-to-Bill as unified platform for multi-market operations, integrated with PLEXOS for resource planning.
+                </p>
+                <div style="margin-top: 20px;">
+                    <strong style="color: #10b981;">Results:</strong>
+                    <div style="margin-top: 10px;">
+                        <span class="case-study-metric">$5/MWh saved on imbalance costs</span>
+                        <span class="case-study-metric">95% reduction in settlement errors</span>
+                        <span class="case-study-metric">75% less time on manual processes</span>
+                        <span class="case-study-metric">Smooth EIM market entry</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="case-study-card">
+                <h3>Arizona Public Service (APS) - IRP Optimization</h3>
+                <p style="color: #cbd5e1; margin-bottom: 20px;">
+                    <strong>Challenge:</strong> Evaluate thousands of portfolios for optimal resource mix balancing cost, reliability, and clean energy goals.
+                </p>
+                <p style="color: #cbd5e1; margin-bottom: 20px;">
+                    <strong>Solution:</strong> Used PLEXOS stochastic modeling to analyze solar + storage combinations and production costs.
+                </p>
+                <div style="margin-top: 20px;">
+                    <strong style="color: #10b981;">Results:</strong>
+                    <div style="margin-top: 10px;">
+                        <span class="case-study-metric">Regulatory approval achieved</span>
+                        <span class="case-study-metric">20% lower costs vs. alternatives</span>
+                        <span class="case-study-metric">Optimal solar + storage mix identified</span>
+                        <span class="case-study-metric">$100M+ in ratepayer savings</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="case-study-card">
+                <h3>Tri-State G&T - Market Entry Success</h3>
+                <p style="color: #cbd5e1; margin-bottom: 20px;">
+                    <strong>Challenge:</strong> Cooperative utility entering SPP and CAISO EIM markets with complex rule sets.
+                </p>
+                <p style="color: #cbd5e1; margin-bottom: 20px;">
+                    <strong>Solution:</strong> Deployed Adapt2 for automated bidding and settlements across both markets.
+                </p>
+                <div style="margin-top: 20px;">
+                    <strong style="color: #10b981;">Results:</strong>
+                    <div style="margin-top: 10px;">
+                        <span class="case-study-metric">Seamless dual-market entry</span>
+                        <span class="case-study-metric">Improved operational visibility</span>
+                        <span class="case-study-metric">Annual dispatch cost savings</span>
+                        <span class="case-study-metric">Early error detection via shadow settlements</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Value Section -->
+        <div id="products" class="content-section">
+            <h2 style="margin-bottom: 30px;">Product Capabilities → Customer Outcomes</h2>
+            <div class="term-grid">
+                <div class="term-card" onclick="openProductModal('plexos-stochastic')">
+                    <h3>PLEXOS Stochastic Modeling</h3>
+                    <p class="term-definition">Monte Carlo simulation across thousands of scenarios</p>
+                    <div class="value-metric">
+                        <strong>Typical Impact:</strong> $5-10M in identified opportunities
+                    </div>
+                </div>
+                <div class="term-card" onclick="openProductModal('adapt2-ai')">
+                    <h3>Adapt2 AI Bid Optimization</h3>
+                    <p class="term-definition">ML algorithms optimizing bid curves in real-time</p>
+                    <div class="value-metric">
+                        <strong>Typical Impact:</strong> 3-5% price improvement = $2-3M/year
+                    </div>
+                </div>
+                <div class="term-card" onclick="openProductModal('cloud')">
+                    <h3>Cloud Scalability</h3>
+                    <p class="term-definition">Elastic compute from laptop to supercomputer</p>
+                    <div class="value-metric">
+                        <strong>Typical Impact:</strong> 80% faster insights, 40-60% IT savings
+                    </div>
+                </div>
+                <div class="term-card" onclick="openProductModal('adapt2-green')">
+                    <h3>Adapt2 Green</h3>
+                    <p class="term-definition">Renewable asset optimization & REC management</p>
+                    <div class="value-metric">
+                        <strong>Typical Impact:</strong> 20% curtailment reduction, $50-100/kW VPP value
+                    </div>
+                </div>
+                <div class="term-card" onclick="openProductModal('plexos-irp')">
+                    <h3>PLEXOS IRP Planning</h3>
+                    <p class="term-definition">Long-term resource optimization & policy analysis</p>
+                    <div class="value-metric">
+                        <strong>Typical Impact:</strong> $100M+ in optimized investments
+                    </div>
+                </div>
+                <div class="term-card" onclick="openProductModal('adapt2-settlements')">
+                    <h3>Adapt2 Shadow Settlements</h3>
+                    <p class="term-definition">Automated settlement validation & discrepancy detection</p>
+                    <div class="value-metric">
+                        <strong>Typical Impact:</strong> 95% error reduction, $2-5M recovered annually
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROI Calculator Section -->
+        <div id="calculator" class="content-section">
+            <div class="calculator-section">
+                <h2>Advanced ROI Calculator</h2>
+                <p style="color: #94a3b8; margin: 15px 0;">Calculate potential value from Energy Exemplar solutions</p>
+                
+                <div class="calculator-input">
+                    <div class="input-group">
+                        <label>Portfolio Size (MW)</label>
+                        <input type="number" id="portfolioSize" value="500" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>Asset Type</label>
+                        <select id="assetType">
+                            <option value="gas">Gas Plant</option>
+                            <option value="wind">Wind Farm</option>
+                            <option value="solar">Solar + Storage</option>
+                            <option value="mixed">Mixed Portfolio</option>
+                            <option value="utility">Regulated Utility</option>
+                            <option value="trader">Trading Desk</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Average Energy Price ($/MWh)</label>
+                        <input type="number" id="energyPrice" value="50" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>Current Forecast Error (%)</label>
+                        <input type="number" id="forecastError" value="15" min="0" max="100">
+                    </div>
+                    <div class="input-group">
+                        <label>Number of Markets</label>
+                        <input type="number" id="numMarkets" value="1" min="1" max="10">
+                    </div>
+                    <div class="input-group">
+                        <label>Manual Process Hours/Week</label>
+                        <input type="number" id="manualHours" value="40" min="0">
+                    </div>
+                </div>
+                
+                <button class="calculate-btn" onclick="calculateROI()">Calculate Potential Value</button>
+                
+                <div id="roiResults" class="results-display">
+                    <!-- Results will be displayed here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Objection Handling Section -->
+        <div id="objections" class="content-section">
+            <h2 style="margin-bottom: 30px;">Common Objections → Value Responses</h2>
+            <div class="term-grid">
+                <div class="term-card" onclick="openObjectionModal('complex')">
+                    <h3>"It's too complex for our team"</h3>
+                    <p class="term-definition">Concern about technical complexity</p>
+                    <div class="value-metric">
+                        <strong>Response:</strong> Automation handles complexity
+                    </div>
+                </div>
+                <div class="term-card" onclick="openObjectionModal('inhouse')">
+                    <h3>"We have an in-house solution"</h3>
+                    <p class="term-definition">Existing custom-built systems</p>
+                    <div class="value-metric">
+                        <strong>Response:</strong> $2-3M hidden maintenance costs
+                    </div>
+                </div>
+                <div class="term-card" onclick="openObjectionModal('roi')">
+                    <h3>"The ROI isn't clear"</h3>
+                    <p class="term-definition">Uncertainty about value</p>
+                    <div class="value-metric">
+                        <strong>Response:</strong> 5% forecast improvement = $3-5M/year
+                    </div>
+                </div>
+                <div class="term-card" onclick="openObjectionModal('competitor')">
+                    <h3>"We're looking at OATI/PCI"</h3>
+                    <p class="term-definition">Competitive evaluation</p>
+                    <div class="value-metric">
+                        <strong>Response:</strong> Modern architecture + global capabilities
+                    </div>
+                </div>
+                <div class="term-card" onclick="openObjectionModal('timing')">
+                    <h3>"Not the right time"</h3>
+                    <p class="term-definition">Budget or timing concerns</p>
+                    <div class="value-metric">
+                        <strong>Response:</strong> $200K/month in opportunity cost
+                    </div>
+                </div>
+                <div class="term-card" onclick="openObjectionModal('integration')">
+                    <h3>"Integration looks difficult"</h3>
+                    <p class="term-definition">IT and system concerns</p>
+                    <div class="value-metric">
+                        <strong>Response:</strong> Cloud-native with proven integrations
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div id="modalContent">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Extended energy market terms data
+        const termsData = [
+            {
+                id: 'iso-rto',
+                term: 'ISO/RTO',
+                definition: 'Independent System Operator / Regional Transmission Organization',
+                translations: {
+                    'C-Suite': 'The market operator that determines your revenue opportunities and operational constraints',
+                    'Trading': 'The entity running the auctions where you bid - we ensure you capture every revenue stream',
+                    'Operations': 'The system that sends you dispatch signals and settlement statements',
+                    'Finance': 'The organization that determines your market revenues and charges'
+                },
+                impact: 'Adapt2 reduces ISO settlement discrepancies by 95%, recovering $2-5M annually'
+            },
+            {
+                id: 'lmp',
+                term: 'LMP (Locational Marginal Price)',
+                definition: 'Cost to deliver one additional MW at a specific location',
+                translations: {
+                    'C-Suite': 'The real-time price that determines your plant\'s profitability',
+                    'Trading': 'The price differential you arbitrage across nodes - our AI identifies opportunities 3x faster',
+                    'Plant Manager': 'The signal that determines when your assets run',
+                    'Risk Manager': 'The volatile price exposure in your portfolio'
+                },
+                impact: 'PLEXOS improves price prediction by 15-20%, worth $10-15M annually for 1,000 MW'
+            },
+            {
+                id: 'ancillary',
+                term: 'Ancillary Services',
+                definition: 'Grid reliability services like frequency regulation and reserves',
+                translations: {
+                    'C-Suite': 'Additional revenue streams beyond energy sales - typically 10-15% uplift',
+                    'Asset Manager': 'Premium-priced services your flexible assets can provide',
+                    'Operations': 'Technical capabilities you may not be fully monetizing',
+                    'Finance': 'High-margin opportunities with 30-40% better economics'
+                },
+                impact: 'Adapt2 increases ancillary revenues by 25-35%, adding $3-7M per 500 MW'
+            },
+            {
+                id: 'curtailment',
+                term: 'Curtailment',
+                definition: 'Forced reduction of renewable generation due to constraints',
+                translations: {
+                    'Developer': 'Lost revenue when your assets can\'t deliver power',
+                    'Investor': 'The risk factor reducing your project IRR by 3-5%',
+                    'Grid Operator': 'Wasted clean energy that increases system costs',
+                    'Sustainability': 'Clean MWhs that never reach customers'
+                },
+                impact: 'PLEXOS reduces curtailment by 20%, worth $5-8M annually for 300 MW wind'
+            },
+            {
+                id: 'der',
+                term: 'DER (Distributed Energy Resources)',
+                definition: 'Small-scale generation and storage at distribution level',
+                translations: {
+                    'Utility Executive': 'Customer assets transforming your business model',
+                    'Grid Planner': 'Thousands of new connection points affecting stability',
+                    'Commercial': 'Behind-the-meter assets that can generate revenue',
+                    'Regulator': 'Resources requiring new compensation frameworks'
+                },
+                impact: 'Adapt2 Green enables VPP management at $50-100/kW-year in new revenues'
+            },
+            {
+                id: 'capacity',
+                term: 'Capacity Markets',
+                definition: 'Forward auctions procuring generation capacity 3-4 years ahead',
+                translations: {
+                    'Executive': 'Guaranteed revenue providing investment certainty',
+                    'CFO': 'Predictable cash flows improving debt coverage ratios',
+                    'Developer': 'Insurance premium the market pays for availability',
+                    'Investor': '30-40% of fixed costs covered before generating power'
+                },
+                impact: 'Typical 500 MW gas plant: $15-25M annual capacity payments'
+            },
+            {
+                id: 'vpp',
+                term: 'Virtual Power Plant',
+                definition: 'Aggregated DERs operated as single market resource',
+                translations: {
+                    'Executive': 'Platform play creating network effects without owning assets',
+                    'Business Dev': 'Uber for energy - monetize availability not ownership',
+                    'Operations': 'Orchestrate thousands of assets as one controllable resource',
+                    'Investor': 'Asset-light model with software-like margins'
+                },
+                impact: '50 MW VPP generates $5-10M annually with minimal capital'
+            },
+            {
+                id: 'ppa',
+                term: 'Power Purchase Agreement',
+                definition: 'Long-term contract for energy delivery at fixed prices',
+                translations: {
+                    'Developer': 'Bankable revenue securing project financing',
+                    'CFO': 'Price hedge eliminating market volatility risk',
+                    'Buyer': 'Budget certainty and renewable energy credits',
+                    'Lender': 'Credit-worthy offtake enabling project loans'
+                },
+                impact: 'PLEXOS PPA structuring optimizes terms worth 10-15% NPV improvement'
+            }
+        ];
+
+        // Competitive data
+        const competitiveData = {
+            oati: {
+                title: 'OATI Battle Card',
+                strengths: [
+                    '2,200+ North American customers',
+                    'All U.S. system operators trust them',
+                    'Deep utility relationships (25+ years)',
+                    'Comprehensive ETRM platform'
+                ],
+                weaknesses: [
+                    'Limited global presence',
+                    'Legacy technology architecture',
+                    'Conservative innovation approach',
+                    'Complex, dated interface'
+                ],
+                winStrategy: [
+                    'Emphasize global capabilities for multinational organizations',
+                    'Highlight modern cloud-native architecture advantages',
+                    'Demonstrate superior renewable energy modeling',
+                    'Show faster implementation and lower TCO'
+                ],
+                positioning: 'While OATI serves North America well, Energy Exemplar provides global capabilities essential for multinational organizations and international expansion.'
+            },
+            pci: {
+                title: 'PCI Energy Solutions Battle Card',
+                strengths: [
+                    '70% of Fortune 500 utilities',
+                    '60% of NA generation optimized',
+                    'Modern cloud-native architecture',
+                    'Strong bid-to-bill integration'
+                ],
+                weaknesses: [
+                    'North America focus only',
+                    'Power generation specialization',
+                    'Limited international experience',
+                    'Smaller scale vs. global providers'
+                ],
+                winStrategy: [
+                    'Multi-commodity integration beyond power',
+                    'International regulatory expertise',
+                    'Comprehensive trading and risk capabilities',
+                    'Financial analysis for project development'
+                ],
+                positioning: 'While PCI optimizes power generation well, Energy Exemplar provides comprehensive energy system simulation across all commodities and markets.'
+            },
+            ge: {
+                title: 'GE Vernova Battle Card',
+                strengths: [
+                    'Hardware-software integration',
+                    'Grid engineering expertise',
+                    'Installed base relationships',
+                    'Enterprise scale and resources'
+                ],
+                weaknesses: [
+                    'Heavy, complex implementations',
+                    'Hardware-centric approach',
+                    'Slow innovation cycles',
+                    'High total cost of ownership'
+                ],
+                winStrategy: [
+                    'Pure software flexibility and speed',
+                    'Faster time to value (90 days vs. years)',
+                    'Modern AI/ML capabilities',
+                    'Lower TCO with cloud deployment'
+                ],
+                positioning: 'Energy Exemplar\'s pure software approach delivers faster innovation and flexibility compared to GE\'s hardware-centric solutions.'
+            },
+            ion: {
+                title: 'ION Commodities Battle Card',
+                strengths: [
+                    '1,200+ global clients',
+                    '62% of top 250 energy companies',
+                    'Sophisticated derivatives platform',
+                    'Strong financial modeling'
+                ],
+                weaknesses: [
+                    'Complex, requires specialists',
+                    'High cost of ownership',
+                    'Limited physical optimization',
+                    'Derivatives-centric approach'
+                ],
+                winStrategy: [
+                    'Integrated physical-financial modeling',
+                    'User-friendly for operations teams',
+                    'Multi-commodity platform',
+                    'Faster implementation, lower training'
+                ],
+                positioning: 'While ION excels at derivatives trading, Energy Exemplar bridges physical operations and financial optimization in one platform.'
+            }
+        };
+
+        // Stakeholder data
+        const stakeholderData = {
+            pe: {
+                title: 'Private Equity / Investors',
+                language: 'IRR, EBITDA multiples, portfolio optimization, exit strategy',
+                framework: [
+                    'Start with returns: "Improve portfolio EBITDA by 10-15% through operational optimization"',
+                    'Quantify quickly: "Each 1% improvement in dispatch efficiency = $1M EBITDA for 500 MW"',
+                    'Focus on speed: "Value creation visible in 90 days, full impact within 6 months"',
+                    'Address risk: "Reduce earnings volatility by 20-30% through better hedging"'
+                ]
+            },
+            utility: {
+                title: 'Utility Executives',
+                language: 'Rate cases, customer bills, reliability, regulatory compliance',
+                framework: [
+                    'Lead with ratepayers: "Reduce customer costs by $50-100M over planning horizon"',
+                    'Address regulators: "Demonstrate prudent decision-making with auditable analysis"',
+                    'Emphasize reliability: "Maintain 99.99% reliability while integrating 50% renewables"',
+                    'Show leadership: "Position as innovative utility leading the energy transition"'
+                ]
+            },
+            renewable: {
+                title: 'Renewable Developers',
+                language: 'LCOE, capacity factors, PPAs, interconnection queues',
+                framework: [
+                    'Start with economics: "Improve project NPV by 15-20% through optimized design"',
+                    'Address risks: "Reduce curtailment risk from 15% to 5% through better siting"',
+                    'Accelerate development: "Cut interconnection study time by 50% with modeling"',
+                    'Enable growth: "Scale from 500 MW to 2 GW without adding analytical headcount"'
+                ]
+            },
+            trading: {
+                title: 'Trading Organizations',
+                language: 'Spreads, basis risk, VaR, position limits',
+                framework: [
+                    'Focus on alpha: "Generate 20-30% better returns through superior forecasting"',
+                    'Emphasize speed: "React to market changes in minutes, not hours"',
+                    'Quantify edge: "See price dislocations 2-4 hours before competitors"',
+                    'Address risk: "Reduce VaR by 25% through better position optimization"'
+                ]
+            },
+            iso: {
+                title: 'System Operators (ISO/RTO)',
+                language: 'Grid reliability, market efficiency, NERC standards, congestion management',
+                framework: [
+                    'Lead with reliability: "Ensure 99.99% grid reliability with increasing renewable penetration"',
+                    'Market efficiency: "Optimize dispatch to minimize system costs and congestion"',
+                    'Regulatory compliance: "Meet all NERC standards with automated reporting"',
+                    'Future planning: "Model grid evolution scenarios for 20+ year horizon"'
+                ]
+            },
+            regulator: {
+                title: 'Regulators & Policy Makers',
+                language: 'Consumer protection, resource adequacy, market rules, policy goals',
+                framework: [
+                    'Consumer focus: "Ensure fair rates while maintaining system reliability"',
+                    'Policy implementation: "Model impact of renewable mandates on costs and reliability"',
+                    'Market oversight: "Validate utility investments are prudent and beneficial"',
+                    'Innovation enabling: "Design markets that incentivize clean energy transition"'
+                ]
+            },
+            consultant: {
+                title: 'Consultants & Advisors',
+                language: 'Client deliverables, data-driven insights, best practices, benchmarking',
+                framework: [
+                    'Credibility: "Industry-standard tools trusted by leading organizations globally"',
+                    'Efficiency: "Complete complex studies 50% faster with proven methodologies"',
+                    'Differentiation: "Offer unique insights through advanced stochastic modeling"',
+                    'Scalability: "Handle multiple client engagements with cloud resources"'
+                ]
+            },
+            finance: {
+                title: 'Financial Institutions',
+                language: 'Due diligence, project finance, risk assessment, return profiles',
+                framework: [
+                    'Investment validation: "Stress-test project economics across 1000+ scenarios"',
+                    'Risk quantification: "Identify and price market, weather, and regulatory risks"',
+                    'Portfolio optimization: "Model correlation effects across energy investments"',
+                    'Exit planning: "Forecast asset values under different market evolution paths"'
+                ]
+            }
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            displayTerms();
+        });
+
+        function displayTerms(searchQuery = '') {
+            const grid = document.getElementById('termsGrid');
+            const filtered = searchQuery 
+                ? termsData.filter(t => 
+                    t.term.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    t.definition.toLowerCase().includes(searchQuery.toLowerCase()))
+                : termsData;
+            
+            grid.innerHTML = filtered.map(term => `
+                <div class="term-card" onclick="openTermModal('${term.id}')">
+                    <h3>${term.term}</h3>
+                    <p class="term-definition">${term.definition}</p>
+                    <div class="value-metric">
+                        <strong>Impact:</strong> ${term.impact}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function searchTerms(query) {
+            displayTerms(query);
+        }
+
+        function switchTab(tabName) {
+            // Update nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update content sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        function openTermModal(termId) {
+            const term = termsData.find(t => t.id === termId);
+            if (!term) return;
+            
+            const modalContent = `
+                <h2 style="color: #3b82f6; margin-bottom: 20px;">${term.term}</h2>
+                <p style="color: #cbd5e1; margin-bottom: 30px; font-size: 1.1rem;">${term.definition}</p>
+                
+                <h3 style="color: #10b981; margin-bottom: 20px;">Stakeholder Translations</h3>
+                <div class="stakeholder-tabs">
+                    ${Object.keys(term.translations).map((key, index) => `
+                        <div class="stakeholder-tab ${index === 0 ? 'active' : ''}" 
+                             onclick="showTranslation('${termId}', '${key}', this)">
+                            ${key}
+                        </div>
+                    `).join('')}
+                </div>
+                
+                ${Object.entries(term.translations).map(([key, value], index) => `
+                    <div class="translation-content ${index === 0 ? 'active' : ''}" 
+                         id="trans-${termId}-${key.replace(/\s+/g, '-')}">
+                        <p style="font-size: 1.1rem; line-height: 1.8;">${value}</p>
+                    </div>
+                `).join('')}
+                
+                <div class="value-metric" style="margin-top: 30px;">
+                    <h3 style="color: #10b981; margin-bottom: 10px;">Quantifiable Business Impact</h3>
+                    <p style="font-size: 1.2rem;">${term.impact}</p>
+                </div>
+            `;
+            
+            document.getElementById('modalContent').innerHTML = modalContent;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function showTranslation(termId, stakeholder, element) {
+            // Update tabs
+            element.parentElement.querySelectorAll('.stakeholder-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            element.classList.add('active');
+            
+            // Update content
+            document.querySelectorAll(`[id^="trans-${termId}"]`).forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`trans-${termId}-${stakeholder.replace(/\s+/g, '-')}`).classList.add('active');
+        }
+
+        function openCompetitiveModal(competitor) {
+            const data = competitiveData[competitor];
+            if (!data) return;
+            
+            const modalContent = `
+                <div class="battle-card">
+                    <h3>${data.title}</h3>
+                    
+                    <div class="vs-comparison">
+                        <div class="vs-section competitor">
+                            <h4 style="color: #ef4444; margin-bottom: 15px;">Their Strengths</h4>
+                            <ul style="list-style: none; padding: 0;">
+                                ${data.strengths.map(s => `<li style="padding: 8px 0; color: #cbd5e1;">• ${s}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div class="vs-divider">VS</div>
+                        
+                        <div class="vs-section ee">
+                            <h4 style="color: #10b981; margin-bottom: 15px;">Our Advantages</h4>
+                            <ul style="list-style: none; padding: 0;">
+                                ${data.winStrategy.map(w => `<li style="padding: 8px 0; color: #cbd5e1;">• ${w}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px; padding: 20px; background: rgba(59, 130, 246, 0.1); border-radius: 12px;">
+                        <h4 style="color: #3b82f6; margin-bottom: 15px;">Positioning Statement</h4>
+                        <p style="font-size: 1.1rem; line-height: 1.8; color: #cbd5e1; font-style: italic;">
+                            "${data.positioning}"
+                        </p>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4 style="color: #f59e0b; margin-bottom: 15px;">Their Weaknesses to Exploit</h4>
+                        <ul style="list-style: none; padding: 0;">
+                            ${data.weaknesses.map(w => `<li style="padding: 8px 0; color: #cbd5e1;">• ${w}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('modalContent').innerHTML = modalContent;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function openStakeholderModal(type) {
+            const stakeholder = stakeholderData[type];
+            if (!stakeholder) return;
+            
+            const modalContent = `
+                <h2 style="color: #3b82f6; margin-bottom: 20px;">${stakeholder.title}</h2>
+                <div style="background: rgba(59, 130, 246, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                    <h3 style="color: #10b981; margin-bottom: 15px;">Their Language</h3>
+                    <p style="font-size: 1.1rem; color: #cbd5e1;">${stakeholder.language}</p>
+                </div>
+                
+                <h3 style="color: #10b981; margin-bottom: 20px;">Translation Framework</h3>
+                <div style="space-y: 15px;">
+                    ${stakeholder.framework.map(item => `
+                        <div style="background: rgba(30, 41, 59, 0.6); padding: 15px; border-left: 3px solid #10b981; border-radius: 8px; margin-bottom: 15px;">
+                            <p style="font-size: 1.05rem; line-height: 1.6;">${item}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            document.getElementById('modalContent').innerHTML = modalContent;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function openProductModal(product) {
+            const products = {
+                'plexos-stochastic': {
+                    title: 'PLEXOS Stochastic Modeling',
+                    feature: 'Monte Carlo simulation across thousands of scenarios with weather, outage, and price uncertainty',
+                    outcomes: {
+                        'Risk-Averse Utility': 'Understand your full risk exposure - not just the average case. Like stress-testing a portfolio.',
+                        'Renewable Developer': 'Quantify probability of meeting P90 guarantees. Reduce financing costs with robust risk management.',
+                        'Trader': 'See the full distribution of prices, not just point forecasts. Identify asymmetric opportunities.'
+                    },
+                    value: 'Moving from deterministic to stochastic analysis typically identifies $5-10M in hidden risks or opportunities'
+                },
+                'adapt2-ai': {
+                    title: 'Adapt2 AI-Powered Bid Optimization',
+                    feature: 'Machine learning algorithms optimizing bid curves based on patterns and real-time conditions',
+                    outcomes: {
+                        'Generation Owner': 'Assets automatically bid at perfect price points - more dispatch at higher margins',
+                        'Operations Manager': 'Reduce 4-6 hours daily bid prep to 30 minutes of review',
+                        'CFO': 'Improve realized prices by 3-5% - worth $2-3M annually per 500 MW'
+                    },
+                    value: 'AI optimization improves bidding success by 15-20% while reducing overhead by 75%'
+                },
+                'cloud': {
+                    title: 'Cloud Scalability',
+                    feature: 'Elastic compute resources scaling from laptop to supercomputer on demand',
+                    outcomes: {
+                        'Planning Director': 'Run annual IRP in 2 days instead of 2 weeks - accelerate billion-dollar decisions',
+                        'Trading Desk': 'Analyze 10x more scenarios before market close - find opportunities competitors miss',
+                        'IT Director': 'Eliminate $2-3M in infrastructure while improving performance 5-10x'
+                    },
+                    value: 'Cloud deployment reduces time-to-insight by 80% while cutting IT costs by 40-60%'
+                },
+                'adapt2-green': {
+                    title: 'Adapt2 Green - Renewable Optimization',
+                    feature: 'AI-powered renewable asset management, REC tracking, and VPP orchestration',
+                    outcomes: {
+                        'Renewable Operator': 'Reduce curtailment by 20% through intelligent bidding strategies',
+                        'VPP Manager': 'Orchestrate thousands of DERs as single controllable resource',
+                        'Sustainability Officer': 'Track and monetize every REC with automated compliance reporting'
+                    },
+                    value: 'Typical results: 20% curtailment reduction, $50-100/kW-year VPP value creation'
+                },
+                'plexos-irp': {
+                    title: 'PLEXOS IRP Planning',
+                    feature: 'Long-term resource planning optimizing across thousands of portfolio combinations',
+                    outcomes: {
+                        'Utility Planner': 'Evaluate 10,000+ portfolios to find optimal resource mix',
+                        'Regulator': 'Transparent, auditable analysis for rate case approval',
+                        'Executive': 'Billion-dollar investment decisions backed by rigorous analysis'
+                    },
+                    value: 'Typical IRP optimization saves $100M+ over planning horizon vs. traditional approaches'
+                },
+                'adapt2-settlements': {
+                    title: 'Adapt2 Shadow Settlements',
+                    feature: 'Automated settlement validation catching discrepancies before ISO true-up',
+                    outcomes: {
+                        'CFO': 'Recover $2-5M annually in missed revenues and avoid penalties',
+                        'Settlements Team': 'Reduce manual validation from days to hours',
+                        'Compliance': 'Audit-ready documentation for all market transactions'
+                    },
+                    value: '95% reduction in settlement errors, 75% less manual effort, $2-5M annual recovery'
+                }
+            };
+            
+            const prod = products[product];
+            if (!prod) return;
+            
+            const modalContent = `
+                <h2 style="color: #3b82f6; margin-bottom: 20px;">${prod.title}</h2>
+                <div style="background: rgba(30, 41, 59, 0.8); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                    <h3 style="color: #94a3b8; margin-bottom: 10px;">Technical Feature</h3>
+                    <p style="font-size: 1.1rem; color: #cbd5e1;">${prod.feature}</p>
+                </div>
+                
+                <h3 style="color: #10b981; margin-bottom: 20px;">Customer Outcomes by Role</h3>
+                ${Object.entries(prod.outcomes).map(([role, outcome]) => `
+                    <div style="background: rgba(59, 130, 246, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                        <h4 style="color: #3b82f6; margin-bottom: 10px;">${role}</h4>
+                        <p style="color: #cbd5e1; line-height: 1.6;">${outcome}</p>
+                    </div>
+                `).join('')}
+                
+                <div class="value-metric" style="margin-top: 30px;">
+                    <h3 style="color: #10b981; margin-bottom: 10px;">Quantified Value Statement</h3>
+                    <p style="font-size: 1.2rem;">${prod.value}</p>
+                </div>
+            `;
+            
+            document.getElementById('modalContent').innerHTML = modalContent;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function openObjectionModal(type) {
+            const objections = {
+                complex: {
+                    title: "It's too complex for our team",
+                    reality: 'Energy markets ARE complex with thousands of constraints and rules',
+                    response: 'That complexity is exactly why you need intelligent automation. Adapt2 handles the technical complexity behind an intuitive interface - like how TurboTax handles tax code complexity. Your team focuses on strategic decisions while the platform handles technical execution.',
+                    impact: 'Customers report 75% reduction in training time and 90% fewer errors',
+                    proof: 'Xcel Energy transitioned to multi-market operations with just 2 weeks of training'
+                },
+                inhouse: {
+                    title: "We already have an in-house solution",
+                    reality: 'Custom solutions require constant updates for market rule changes',
+                    response: 'Your IT team spends 30-40% of their time maintaining market interfaces that we update automatically. That\'s $2-3M annually in hidden costs plus missed opportunities from delayed rule implementations. We free your team to focus on value creation, not maintenance.',
+                    impact: 'Average customer saves $2-3M/year in IT costs and captures $1-2M in previously missed opportunities',
+                    proof: 'Tri-State G&T eliminated 3 FTEs maintaining custom systems after Adapt2 implementation'
+                },
+                roi: {
+                    title: "The ROI isn't clear",
+                    reality: 'Energy market optimization has complex, interrelated benefits',
+                    response: 'Let\'s isolate one metric: forecast accuracy. A 5% improvement in price forecasting - which we routinely deliver - translates to $3-5M annually for a 500 MW portfolio through better unit commitment alone. That\'s before considering reduced penalties, captured ancillary revenues, or decreased manual effort.',
+                    impact: 'Typical payback period: 4-6 months. 3-year ROI: 400-600%',
+                    proof: 'APS saved $100M+ in resource planning using PLEXOS optimization'
+                },
+                competitor: {
+                    title: "We're evaluating OATI/PCI",
+                    reality: 'Legacy providers have market presence but aging technology',
+                    response: 'OATI has 2,200 customers but uses 20-year-old architecture. PCI is cloud-native but North America only. Energy Exemplar uniquely combines: global reach, modern cloud architecture, multi-commodity integration, and proven AI/ML capabilities. Plus, we deliver value in 90 days vs. their 6-12 month implementations.',
+                    impact: 'Win rate vs. OATI: 73%. Win rate vs. PCI: 68%',
+                    proof: 'See our detailed competitive comparison showing 40% lower TCO'
+                },
+                timing: {
+                    title: "Not the right time",
+                    reality: 'Every month of delay costs real money',
+                    response: 'The cost of waiting is $200K+ per month in missed opportunities - settlement errors, suboptimal bidding, and manual processes. Plus, your competitors are already using these tools. We can start with a focused pilot that delivers value in 30 days while you plan the full rollout.',
+                    impact: 'Pilot implementations show positive ROI within 60 days',
+                    proof: 'Calculate your specific opportunity cost with our ROI tool'
+                },
+                integration: {
+                    title: "Integration looks difficult",
+                    reality: 'Modern APIs make integration straightforward',
+                    response: 'Our cloud-native platform integrates via standard APIs - no custom development needed. We\'ve successfully integrated with every major EMS, SCADA, and settlement system. Most integrations complete in 2-4 weeks with our expert team handling the technical work.',
+                    impact: '95% of integrations complete on schedule with zero downtime',
+                    proof: 'Reference architecture available for your specific system combination'
+                }
+            };
+            
+            const objection = objections[type];
+            if (!objection) return;
+            
+            const modalContent = `
+                <h2 style="color: #ef4444; margin-bottom: 20px;">Objection: "${objection.title}"</h2>
+                
+                <div style="background: rgba(239, 68, 68, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                    <h3 style="color: #f87171; margin-bottom: 10px;">Technical Reality</h3>
+                    <p style="color: #cbd5e1;">${objection.reality}</p>
+                </div>
+                
+                <div style="background: rgba(16, 185, 129, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                    <h3 style="color: #10b981; margin-bottom: 10px;">Value-Based Response</h3>
+                    <p style="font-size: 1.1rem; line-height: 1.8; color: #cbd5e1;">${objection.response}</p>
+                </div>
+                
+                <div class="value-metric">
+                    <h3 style="color: #3b82f6; margin-bottom: 10px;">Proven Impact</h3>
+                    <p style="font-size: 1.2rem;">${objection.impact}</p>
+                </div>
+                
+                <div style="margin-top: 20px; padding: 15px; background: rgba(251, 191, 36, 0.1); border-left: 3px solid #fbbf24; border-radius: 8px;">
+                    <strong style="color: #fbbf24;">Proof Point:</strong>
+                    <p style="color: #cbd5e1; margin-top: 5px;">${objection.proof}</p>
+                </div>
+            `;
+            
+            document.getElementById('modalContent').innerHTML = modalContent;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function calculateROI() {
+            const portfolioSize = parseFloat(document.getElementById('portfolioSize').value) || 0;
+            const assetType = document.getElementById('assetType').value;
+            const energyPrice = parseFloat(document.getElementById('energyPrice').value) || 0;
+            const forecastError = parseFloat(document.getElementById('forecastError').value) || 0;
+            const numMarkets = parseFloat(document.getElementById('numMarkets').value) || 1;
+            const manualHours = parseFloat(document.getElementById('manualHours').value) || 0;
+            
+            // Calculate base values
+            const annualMWh = portfolioSize * 8760 * 0.35; // Assuming 35% capacity factor
+            const annualRevenue = annualMWh * energyPrice;
+            
+            // Calculate improvements based on asset type
+            let forecastImprovement = 0.3; // 30% reduction in forecast error
+            let bidOptimization = 0.04; // 4% price improvement
+            let ancillaryCapture = 0.12; // 12% additional revenue
+            let curtailmentReduction = 0;
+            let settlementRecovery = 0.02; // 2% of revenue recovered
+            
+            // Adjust factors based on asset type
+            if (assetType === 'wind' || assetType === 'solar') {
+                curtailmentReduction = 0.2; // 20% reduction in curtailment
+                ancillaryCapture = 0.08; // Lower ancillary for renewables
+            } else if (assetType === 'utility') {
+                bidOptimization = 0.02; // Lower for regulated
+                settlementRecovery = 0.03; // Higher settlement value
+            } else if (assetType === 'trader') {
+                forecastImprovement = 0.4; // Higher value from better forecasting
+                bidOptimization = 0.06; // Higher trading margins
+            }
+            
+            // Multi-market multiplier
+            const marketMultiplier = 1 + ((numMarkets - 1) * 0.3);
+            
+            // Calculate value improvements
+            const forecastValue = annualRevenue * (forecastError / 100) * forecastImprovement * 0.1;
+            const bidValue = annualRevenue * bidOptimization * marketMultiplier;
+            const ancillaryValue = annualRevenue * ancillaryCapture;
+            const curtailmentValue = assetType === 'wind' || assetType === 'solar' 
+                ? annualRevenue * 0.1 * curtailmentReduction 
+                : 0;
+            const settlementValue = annualRevenue * settlementRecovery * numMarkets;
+            
+            // Labor savings
+            const laborSavings = manualHours * 52 * 100 * 0.75; // $100/hour, 75% reduction
+            
+            // Total value
+            const totalValue = forecastValue + bidValue + ancillaryValue + curtailmentValue + settlementValue + laborSavings;
+            
+            // Implementation cost estimate
+            const implementationCost = portfolioSize * 1000 + (numMarkets * 50000);
+            const roiPercent = ((totalValue / implementationCost) * 100);
+            const paybackMonths = implementationCost / (totalValue / 12);
+            
+            // Display results
+            const resultsHTML = `
+                <h3 style="color: #10b981; margin-bottom: 20px;">Projected Annual Value Creation</h3>
+                <div class="result-item">
+                    <span>Forecast Accuracy Improvement</span>
+                    <span style="color: #10b981;">${formatNumber(forecastValue)}</span>
+                </div>
+                <div class="result-item">
+                    <span>Bid Optimization Value (${numMarkets} market${numMarkets > 1 ? 's' : ''})</span>
+                    <span style="color: #10b981;">${formatNumber(bidValue)}</span>
+                </div>
+                <div class="result-item">
+                    <span>Ancillary Services Capture</span>
+                    <span style="color: #10b981;">${formatNumber(ancillaryValue)}</span>
+                </div>
+                ${curtailmentValue > 0 ? `
+                <div class="result-item">
+                    <span>Curtailment Reduction</span>
+                    <span style="color: #10b981;">${formatNumber(curtailmentValue)}</span>
+                </div>
+                ` : ''}
+                <div class="result-item">
+                    <span>Settlement Accuracy Recovery</span>
+                    <span style="color: #10b981;">${formatNumber(settlementValue)}</span>
+                </div>
+                <div class="result-item">
+                    <span>Labor Efficiency Savings</span>
+                    <span style="color: #10b981;">${formatNumber(laborSavings)}</span>
+                </div>
+                <div class="result-item">
+                    <span>Total Annual Value</span>
+                    <span>${formatNumber(totalValue)}</span>
+                </div>
+                
+                <div class="quick-value" style="margin-top: 30px;">
+                    <div class="value-card">
+                        <h4>First Year ROI</h4>
+                        <div class="amount">${roiPercent.toFixed(0)}%</div>
+                    </div>
+                    <div class="value-card">
+                        <h4>Payback Period</h4>
+                        <div class="amount">${paybackMonths.toFixed(1)} months</div>
+                    </div>
+                    <div class="value-card">
+                        <h4>3-Year NPV</h4>
+                        <div class="amount">${formatNumber(totalValue * 2.7)}</div>
+                    </div>
+                    <div class="value-card">
+                        <h4>Monthly Value</h4>
+                        <div class="amount">${formatNumber(totalValue / 12)}</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px; padding: 20px; background: rgba(251, 191, 36, 0.1); border-radius: 12px;">
+                    <h4 style="color: #fbbf24; margin-bottom: 15px;">Key Assumptions</h4>
+                    <ul style="list-style: none; padding: 0; color: #cbd5e1;">
+                        <li>• Capacity factor: 35% average</li>
+                        <li>• Implementation timeline: 90 days</li>
+                        <li>• Forecast improvement: ${(forecastImprovement * 100).toFixed(0)}% reduction in error</li>
+                        <li>• Price optimization: ${(bidOptimization * 100).toFixed(0)}% improvement</li>
+                        <li>• Labor efficiency: 75% reduction in manual effort</li>
+                    </ul>
+                </div>
+            `;
+            
+            document.getElementById('roiResults').innerHTML = resultsHTML;
+            document.getElementById('roiResults').classList.add('active');
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(0) + 'K';
+            }
+            return num.toFixed(0);
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
