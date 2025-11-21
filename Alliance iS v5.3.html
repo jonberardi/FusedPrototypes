@@ -1,0 +1,2452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alliance iS Intelligence Platform v5.3 - Waters (Fixed ROI)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0066CC 0%, #004494 100%);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            flex: 1;
+        }
+
+        .header h1 {
+            color: #0066CC;
+            font-size: 1.6em;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f0f4f8;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .toggle-label {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background: #ccc;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #4CAF50;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(24px);
+        }
+
+        .save-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .save-btn:hover {
+            background: #45a049;
+        }
+
+        /* Discovery Mode Overlay */
+        .discovery-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .discovery-overlay.active {
+            display: flex;
+        }
+
+        .discovery-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .discovery-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .discovery-header h2 {
+            color: #0066CC;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .revenue-counter {
+            font-size: 3em;
+            font-weight: bold;
+            color: #4CAF50;
+            text-align: center;
+            margin: 20px 0;
+            transition: all 0.5s ease;
+        }
+
+        .revenue-counter.pulse {
+            animation: pulse 0.5s ease;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            background: white;
+            border-radius: 10px;
+            padding: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 4px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: #666;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.2s;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .tab-btn:hover {
+            background: #f0f4f8;
+        }
+
+        .tab-btn.active {
+            background: #0066CC;
+            color: white;
+        }
+
+        .tab-btn.highlight {
+            background: #ff6b35;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .tab-btn .badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #dc3545;
+            color: white;
+            font-size: 0.7em;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .panel h2 {
+            color: #0066CC;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .panel h3 {
+            color: #333;
+            font-size: 1em;
+            margin: 15px 0 10px 0;
+        }
+
+        /* Form Elements */
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .slider {
+            flex: 1;
+            height: 5px;
+            border-radius: 3px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #0066CC;
+            cursor: pointer;
+        }
+
+        .slider-value {
+            min-width: 70px;
+            padding: 5px 8px;
+            background: #f0f4f8;
+            border-radius: 6px;
+            font-weight: bold;
+            color: #0066CC;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .dropdown {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        .text-input:focus {
+            border-color: #0066CC;
+            outline: none;
+        }
+
+        /* Metric Cards */
+        .metric-card {
+            background: #f8f9fa;
+            border-left: 4px solid #0066CC;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .metric-card.warning {
+            border-left-color: #ff6b35;
+            background: #fff5f0;
+        }
+
+        .metric-card.success {
+            border-left-color: #4CAF50;
+            background: #f0f9f1;
+        }
+
+        .metric-card.critical {
+            border-left-color: #dc3545;
+            background: #fff0f0;
+        }
+
+        .metric-label {
+            color: #666;
+            font-size: 0.85em;
+            margin-bottom: 4px;
+        }
+
+        .metric-value {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .metric-delta {
+            color: #4CAF50;
+            font-size: 0.85em;
+            margin-top: 2px;
+        }
+
+        .metric-delta.negative {
+            color: #dc3545;
+        }
+
+        /* Alert Boxes */
+        .info-box {
+            background: #e3f2fd;
+            border: 1px solid #2196F3;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+
+        .success-box {
+            background: #e8f5e9;
+            border: 1px solid #4CAF50;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border: 1px solid #ff9800;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+
+        .critical-box {
+            background: #ffebee;
+            border: 1px solid #dc3545;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+
+        .trigger-alert {
+            background: linear-gradient(135deg, #ff6b35, #ff5722);
+            color: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            animation: glow 2s infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(255,107,53,0.5); }
+            50% { box-shadow: 0 0 20px rgba(255,107,53,0.8); }
+        }
+
+        /* Progress Bars */
+        .progress-container {
+            margin-bottom: 15px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #dc3545;
+            transition: width 0.5s ease, background-color 0.5s ease;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            color: white;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .progress-fill.yellow {
+            background: #ffc107;
+        }
+
+        .progress-fill.green {
+            background: #4CAF50;
+        }
+
+        /* Risk Grid */
+        .risk-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .risk-item {
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .risk-item.critical {
+            background: #dc3545;
+            color: white;
+        }
+
+        .risk-item.warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .risk-item.good {
+            background: #4CAF50;
+            color: white;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.9em;
+        }
+
+        .data-table th {
+            background: #0066CC;
+            color: white;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .data-table td {
+            padding: 8px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Buttons */
+        .btn {
+            background: #0066CC;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9em;
+        }
+
+        .btn:hover {
+            background: #004494;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #0066CC;
+            border: 2px solid #0066CC;
+        }
+
+        .btn-secondary:hover {
+            background: #f0f4f8;
+        }
+
+        .btn-success {
+            background: #4CAF50;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        /* Stakeholder Journey */
+        .stakeholder-grid {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .stakeholder-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .journey-stages {
+            display: flex;
+            gap: 5px;
+        }
+
+        .stage-btn {
+            flex: 1;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 6px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .stage-btn.selected {
+            background: #0066CC;
+            color: white;
+            border-color: #0066CC;
+        }
+
+        .stage-btn.unknown {
+            background: #ff9800;
+            color: white;
+            border-color: #ff9800;
+        }
+
+        /* Action Items */
+        .action-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .action-list li {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border-left: 4px solid #0066CC;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .action-list li.urgent {
+            border-left-color: #dc3545;
+            background: #fff0f0;
+        }
+
+        /* Calculation Breakdown */
+        .calc-breakdown {
+            background: #f0f4f8;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.85em;
+            margin: 10px 0;
+        }
+
+        /* Response Card */
+        .response-card {
+            background: #f8f9fa;
+            border-left: 4px solid #0066CC;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+        }
+
+        .response-card h4 {
+            color: #0066CC;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+
+        .response-card p {
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        /* Saved Accounts */
+        .saved-accounts {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .account-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 5px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .account-item:hover {
+            background: #e0e0e0;
+        }
+
+        .account-item.selected {
+            background: #0066CC;
+            color: white;
+        }
+
+        /* Conversation Intelligence */
+        .conversation-input {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .conversation-input h4 {
+            color: #0066CC;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .conversation-input textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.9em;
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .full-width {
+                grid-column: span 1;
+            }
+            .stakeholder-grid {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .header-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>Alliance iS™ Intelligence Platform v5.3</h1>
+                <p>Territory Risk Assessment • Hidden Revenue Discovery • Waters-Validated ROI • Deal Acceleration Triggers</p>
+            </div>
+            <div class="header-controls">
+                <div class="toggle-container">
+                    <span class="toggle-label">Discovery Mode</span>
+                    <div class="toggle-switch" id="discoveryToggle" onclick="toggleDiscovery()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <button class="save-btn" onclick="saveAccount()">💾 Save Account</button>
+            </div>
+        </div>
+
+        <!-- Discovery Mode Overlay -->
+        <div class="discovery-overlay" id="discoveryOverlay">
+            <div class="discovery-panel">
+                <div class="discovery-header">
+                    <h2>🔍 Discovering Hidden Revenue</h2>
+                    <p>Watch as we uncover the true opportunity...</p>
+                </div>
+                <div class="revenue-counter" id="revenueCounter">$0</div>
+                <div id="discoveryQuestions">
+                    <!-- Questions will be inserted here -->
+                </div>
+                <button class="btn btn-success" onclick="completeDiscovery()">View Complete Analysis →</button>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active highlight" onclick="showTab('territory')">
+                Territory Scanner
+            </button>
+            <button class="tab-btn" onclick="showTab('triggers')">
+                Deal Triggers <span class="badge">NEW</span>
+            </button>
+            <button class="tab-btn" onclick="showTab('profile')">Lab Profile</button>
+            <button class="tab-btn" onclick="showTab('impact')">Impact Analysis</button>
+            <button class="tab-btn" onclick="showTab('competitive')">Competitive</button>
+            <button class="tab-btn" onclick="showTab('objections')">Objections</button>
+            <button class="tab-btn" onclick="showTab('stakeholder')">Stakeholders</button>
+            <button class="tab-btn" onclick="showTab('business-case')">Business Case</button>
+            <button class="tab-btn" onclick="showTab('accounts')">
+                Saved Accounts <span class="badge" id="savedCount">3</span>
+            </button>
+        </div>
+
+        <!-- Tab 1: Territory Scanner -->
+        <div id="territory" class="tab-content active">
+            <div class="grid">
+                <div class="panel">
+                    <h2>Territory Quick Assessment</h2>
+                    
+                    <h3>Account Coverage</h3>
+                    <div class="input-group">
+                        <label>Total pharma QC accounts in territory</label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="totalAccounts" min="5" max="50" value="20" oninput="updateTerritory()">
+                            <div class="slider-value" id="totalAccountsValue">20</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Accounts with 10+ year Alliance systems</label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="agingAccounts" min="0" max="25" value="12" oninput="updateTerritory()">
+                            <div class="slider-value" id="agingAccountsValue">12</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Accounts evaluating competitors NOW</label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="competitiveAccounts" min="0" max="10" value="3" oninput="updateTerritory()">
+                            <div class="slider-value" id="competitiveAccountsValue">3</div>
+                        </div>
+                    </div>
+
+                    <h3>Relationship Depth</h3>
+                    <div class="input-group">
+                        <label>Average stakeholders engaged per account</label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="avgStakeholders" min="1" max="6" value="2" step="0.5" oninput="updateTerritory()">
+                            <div class="slider-value" id="avgStakeholdersValue">2</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>% of accounts where you know the CFO</label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="cfoPenetration" min="0" max="100" value="20" step="10" oninput="updateTerritory()">
+                            <div class="slider-value" id="cfoPenetrationValue">20%</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Accounts not contacted in 90+ days</label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="dormantAccounts" min="0" max="20" value="5" oninput="updateTerritory()">
+                            <div class="slider-value" id="dormantAccountsValue">5</div>
+                        </div>
+                    </div>
+
+                    <h3>Deal Velocity</h3>
+                    <div class="input-group">
+                        <label>Average months to close Alliance deals</label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="avgCycleTime" min="3" max="12" value="8" oninput="updateTerritory()">
+                            <div class="slider-value" id="avgCycleTimeValue">8</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Months until quota deadline</label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="monthsToQuota" min="1" max="12" value="6" oninput="updateTerritory()">
+                            <div class="slider-value" id="monthsToQuotaValue">6</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>Territory Risk Analysis</h2>
+                    
+                    <div class="critical-box">
+                        <strong>🔴 CRITICAL GAPS DETECTED</strong>
+                        <div id="criticalGaps" style="margin-top: 8px;">Loading...</div>
+                    </div>
+
+                    <h3>Territory Health Scores</h3>
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Stakeholder Coverage</span>
+                            <span id="stakeholderScore">33%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="stakeholderBar" style="width: 33%">AT RISK</div>
+                        </div>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Competitive Intelligence</span>
+                            <span id="competitiveScore">75%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill green" id="competitiveBar" style="width: 75%">GOOD</div>
+                        </div>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Account Penetration</span>
+                            <span id="penetrationScore">75%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill green" id="penetrationBar" style="width: 75%">GOOD</div>
+                        </div>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Deal Velocity</span>
+                            <span id="velocityScore">44%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill yellow" id="velocityBar" style="width: 44%">NEEDS WORK</div>
+                        </div>
+                    </div>
+
+                    <h3>Revenue at Risk</h3>
+                    <div class="risk-grid">
+                        <div class="risk-item critical">
+                            <div style="font-size: 1.2em;" id="singleThreadRisk">$5.5M</div>
+                            <div>Single-Threaded</div>
+                        </div>
+                        <div class="risk-item critical">
+                            <div style="font-size: 1.2em;" id="competitiveRisk">$4.5M</div>
+                            <div>Competitive Risk</div>
+                        </div>
+                        <div class="risk-item warning">
+                            <div style="font-size: 1.2em;" id="dormantRisk">$2.3M</div>
+                            <div>Dormant Accounts</div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card critical">
+                        <div class="metric-label">Daily Revenue Decay</div>
+                        <div class="metric-value" id="dailyDecay">$49,315</div>
+                        <div class="metric-delta negative">Lost opportunity every 24 hours</div>
+                    </div>
+
+                    <h3>Actions to Stop the Bleeding</h3>
+                    <ul class="action-list">
+                        <li class="urgent" id="action1">🚨 Multi-thread your top 5 Alliance opportunities THIS WEEK</li>
+                        <li class="urgent" id="action2">🚨 Call 5 dormant accounts - 2 are likely talking to competitors</li>
+                        <li id="action3">📞 Schedule CFO meetings for all active opportunities</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="grid" style="margin-top: 15px;">
+                <div class="panel full-width">
+                    <h2>Territory Opportunity Calculator</h2>
+                    
+                    <div class="grid">
+                        <div class="metric-card success">
+                            <div class="metric-label">Total Alliance iS Opportunity</div>
+                            <div class="metric-value" id="territoryOpportunity">$18M</div>
+                            <div class="metric-delta">Based on 12 aging systems</div>
+                        </div>
+
+                        <div class="metric-card warning">
+                            <div class="metric-label">If You Convert Just 25%</div>
+                            <div class="metric-value" id="convertRevenue">$4.5M</div>
+                            <div class="metric-delta" id="quotaImpact">75% of annual quota</div>
+                        </div>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>⚠️ Reality Check:</strong>
+                        <span id="realityCheck">Top 20% of Alliance iS reps engage 5+ stakeholders per account (you: 2). 
+                        They close in 4 months (you: 8 months). At your current rate, you'll miss 50% of opportunities.</span>
+                    </div>
+
+                    <button class="btn" onclick="showTab('profile')" style="margin-top: 10px;">
+                        Analyze Specific Account →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Deal Triggers (NEW) -->
+        <div id="triggers" class="tab-content">
+            <div class="grid">
+                <div class="panel">
+                    <h2>Deal Acceleration Triggers</h2>
+                    
+                    <div class="conversation-input">
+                        <h4>Customer Intelligence Input</h4>
+                        <textarea id="conversationInput" placeholder="What did the customer say? (e.g., 'System down 75% of the time')" onchange="parseConversation()"></textarea>
+                    </div>
+
+                    <h3>Regulatory & Compliance</h3>
+                    <div class="input-group">
+                        <label>FDA audit scheduled?</label>
+                        <select class="dropdown" id="fdaAudit" onchange="updateTriggers()">
+                            <option value="no">No</option>
+                            <option value="6months">Within 6 months</option>
+                            <option value="3months">Within 3 months</option>
+                            <option value="1month">Within 1 month</option>
+                            <option value="warning">FDA Warning Letter received</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>21 CFR Part 11 compliance deadline?</label>
+                        <select class="dropdown" id="cfrDeadline" onchange="updateTriggers()">
+                            <option value="no">No immediate deadline</option>
+                            <option value="july2025">July 1, 2025 enforcement</option>
+                            <option value="custom">Custom deadline</option>
+                        </select>
+                    </div>
+
+                    <h3>Competitive Dynamics</h3>
+                    <div class="input-group">
+                        <label>Competitor system downtime</label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="competitorDowntime" min="0" max="100" value="0" step="5" oninput="updateTriggers()">
+                            <div class="slider-value" id="downtimeValue">0%</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Competitor support issues?</label>
+                        <select class="dropdown" id="supportIssues" onchange="updateTriggers()">
+                            <option value="none">None reported</option>
+                            <option value="minor">Minor complaints</option>
+                            <option value="major">Major dissatisfaction</option>
+                            <option value="critical">Actively seeking replacement</option>
+                        </select>
+                    </div>
+
+                    <h3>Organizational Changes</h3>
+                    <div class="input-group">
+                        <label>New executive in place?</label>
+                        <select class="dropdown" id="newExec" onchange="updateTriggers()">
+                            <option value="no">No changes</option>
+                            <option value="cfo">New CFO</option>
+                            <option value="lab">New Lab Director</option>
+                            <option value="qa">New QA Director</option>
+                            <option value="multiple">Multiple new executives</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Budget cycle timing</label>
+                        <select class="dropdown" id="budgetCycle" onchange="updateTriggers()">
+                            <option value="none">Unknown</option>
+                            <option value="planning">In planning phase now</option>
+                            <option value="approval">Approval phase (next 30 days)</option>
+                            <option value="locked">Budget locked</option>
+                            <option value="emergency">Emergency funds available</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>Urgency Analysis</h2>
+                    
+                    <div class="trigger-alert" id="triggerAlert" style="display: none;">
+                        <strong>🔥 CRITICAL TRIGGER DETECTED!</strong>
+                        <div id="triggerMessage" style="margin-top: 8px;"></div>
+                    </div>
+
+                    <div class="metric-card critical">
+                        <div class="metric-label">Deal Urgency Score</div>
+                        <div class="metric-value" id="urgencyScore">Low</div>
+                        <div class="metric-delta" id="urgencyReason">No immediate triggers</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">Predicted Close Probability</div>
+                        <div class="metric-value" id="closeProbability">35%</div>
+                        <div class="metric-delta" id="probabilityReason">Standard conversion rate</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">Decision Timeline</div>
+                        <div class="metric-value" id="decisionTimeline">6-9 months</div>
+                        <div class="metric-delta" id="timelineReason">Typical evaluation cycle</div>
+                    </div>
+
+                    <h3>Recommended Actions</h3>
+                    <div id="triggerActions">
+                        <ul class="action-list">
+                            <li>Continue standard engagement cadence</li>
+                            <li>Build multi-stakeholder relationships</li>
+                            <li>Gather competitive intelligence</li>
+                        </ul>
+                    </div>
+
+                    <h3>Talk Track</h3>
+                    <div class="response-card">
+                        <h4>Customer Messaging</h4>
+                        <p id="triggerTalkTrack">Standard value proposition focusing on efficiency gains and error prevention.</p>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>Pattern Recognition:</strong> <span id="patternInsight">Similar accounts without triggers typically take 8-12 months to close with 35% win rate.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Lab Profile -->
+        <div id="profile" class="tab-content">
+            <div class="grid">
+                <div class="panel">
+                    <h2>Customer Configuration</h2>
+                    
+                    <div class="input-group">
+                        <label>Account Name (optional)</label>
+                        <input type="text" class="text-input" id="accountName" placeholder="e.g., Pfizer - New Jersey QC Lab" value="Jennifer van Basten - Pfizer">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Number of QC Labs</label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="numLabs" min="1" max="20" value="10" oninput="updateCalculations()">
+                            <div class="slider-value" id="numLabsValue">10</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>New LC operators trained per month</label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="newOperators" min="0" max="5" value="2" step="0.5" oninput="updateCalculations()">
+                            <div class="slider-value" id="newOperatorsValue">2</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Hours to train new users (current)</label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="trainingHours" min="80" max="200" value="180" step="20" oninput="updateCalculations()">
+                            <div class="slider-value" id="trainingHoursValue">180</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Errors per month (all labs)</label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="errorsPerMonth" min="5" max="50" value="45" step="5" oninput="updateCalculations()">
+                            <div class="slider-value" id="errorsPerMonthValue">45</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Hours to address each error</label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="hoursPerError" min="2" max="10" value="4" oninput="updateCalculations()">
+                            <div class="slider-value" id="hoursPerErrorValue">4</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Methods migrated per year</label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="methodsPerYear" min="0" max="200" value="150" step="10" oninput="updateCalculations()">
+                            <div class="slider-value" id="methodsPerYearValue">150</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Hours per method migration (current)</label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="hoursPerMethod" min="5" max="20" value="10" oninput="updateCalculations()">
+                            <div class="slider-value" id="hoursPerMethodValue">10</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Average analyst hourly rate</label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="hourlyRate" min="25" max="60" value="35" step="5" oninput="updateCalculations()">
+                            <div class="slider-value" id="hourlyRateValue">$35</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Current HPLC System Age</label>
+                        <select class="dropdown" id="systemAge" onchange="updateCalculations()">
+                            <option value="new">< 5 years</option>
+                            <option value="mid">5-10 years</option>
+                            <option value="old" selected>10+ years</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Number of HPLC Systems</label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="numSystems" min="5" max="50" value="5" oninput="updateCalculations()">
+                            <div class="slider-value" id="numSystemsValue">5</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>Waters-Validated Impact</h2>
+                    
+                    <div class="info-box">
+                        <strong>Waters Benchmark:</strong> 10-lab pharma companies save $129,173 annually with Alliance iS
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">Training Savings (60% reduction)</div>
+                        <div class="metric-value" id="trainingSavings">$0</div>
+                        <div class="metric-delta">Alliance iS: 64 hours vs current</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">Error Prevention Savings (40% of errors)</div>
+                        <div class="metric-value" id="errorSavings">$0</div>
+                        <div class="metric-delta">Based on your error rate</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">Method Migration Savings (65% with iMTA)</div>
+                        <div class="metric-value" id="methodSavings">$0</div>
+                        <div class="metric-delta">Automated with iMTA tool</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">Solvent & Waste Savings (33%)</div>
+                        <div class="metric-value" id="solventSavings">$12,000</div>
+                        <div class="metric-delta">Waters USP study validated</div>
+                    </div>
+
+                    <div class="metric-card success">
+                        <div class="metric-label">Total Annual Savings</div>
+                        <div class="metric-value" id="totalSavings">$0</div>
+                        <div class="metric-delta" id="savingsComparison">vs Waters benchmark: $129,173</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">First-Year ROI</div>
+                        <div class="metric-value" id="firstYearROI">-77%</div>
+                        <div class="metric-delta" id="firstYearROINote">Investment exceeds first year savings</div>
+                    </div>
+
+                    <div class="metric-card success">
+                        <div class="metric-label">5-Year ROI</div>
+                        <div class="metric-value" id="fiveYearROIProfile">16%</div>
+                        <div class="metric-delta">Total savings exceed investment</div>
+                    </div>
+
+                    <h3>Calculation Details</h3>
+                    <div class="calc-breakdown" id="calcBreakdown">
+                        Loading...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Impact Analysis -->
+        <div id="impact" class="tab-content">
+            <div class="grid">
+                <div class="panel">
+                    <h2>Error Analysis (Waters Research)</h2>
+                    
+                    <div class="metric-card">
+                        <div class="metric-label">Total Annual Errors</div>
+                        <div class="metric-value" id="totalErrors">0</div>
+                        <div class="metric-delta">All causes</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">Human Error Component (56%)</div>
+                        <div class="metric-value" id="humanErrors">0</div>
+                        <div class="metric-delta">Waters-validated percentage</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">Preventable with Alliance iS (40%)</div>
+                        <div class="metric-value" id="preventableErrors">0</div>
+                        <div class="metric-delta">These can be eliminated</div>
+                    </div>
+
+                    <h3>Method Modernization Benefits</h3>
+                    <table class="data-table">
+                        <tr>
+                            <th>Metric</th>
+                            <th>Current</th>
+                            <th>Alliance iS</th>
+                            <th>Improvement</th>
+                        </tr>
+                        <tr>
+                            <td>Analysis Time</td>
+                            <td>6 minutes</td>
+                            <td>4 minutes</td>
+                            <td style="color: #4CAF50;">33% faster</td>
+                        </tr>
+                        <tr>
+                            <td>Solvent/Run</td>
+                            <td>12 mL</td>
+                            <td>8 mL</td>
+                            <td style="color: #4CAF50;">33% less</td>
+                        </tr>
+                        <tr>
+                            <td>USP Tailing</td>
+                            <td>1.8 (FAIL)</td>
+                            <td>1.5 (PASS)</td>
+                            <td style="color: #4CAF50;">Compliant</td>
+                        </tr>
+                        <tr>
+                            <td>Training Time</td>
+                            <td id="currentTrainingDisplay">180 hours</td>
+                            <td>64 hours</td>
+                            <td style="color: #4CAF50;">60% reduction</td>
+                        </tr>
+                        <tr>
+                            <td>Method Migration</td>
+                            <td id="currentMethodDisplay">10 hours</td>
+                            <td>3.5 hours</td>
+                            <td style="color: #4CAF50;">65% faster</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="panel">
+                    <h2>Productivity Impact</h2>
+                    
+                    <div class="metric-card">
+                        <div class="metric-label">Hours Saved Annually</div>
+                        <div class="metric-value" id="totalHoursSaved">0</div>
+                        <div class="metric-delta">All categories combined</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">Additional Sample Capacity</div>
+                        <div class="metric-value">+35%</div>
+                        <div class="metric-delta">Same staff, more throughput</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">First-Time Quality Rate</div>
+                        <div class="metric-value">60% → 96%</div>
+                        <div class="metric-delta">Industry-leading improvement</div>
+                    </div>
+
+                    <div class="success-box">
+                        <strong>Key Differentiators:</strong><br>
+                        • Only system with 40% error prevention<br>
+                        • eConnect automated column tracking<br>
+                        • waters_connect fleet monitoring<br>
+                        • iMTA method migration tool (65% time savings)<br>
+                        • 2x better sensitivity with Ti mixer option
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">First-Year ROI</div>
+                        <div class="metric-value" id="impactFirstYearROI">-77%</div>
+                        <div class="metric-delta">Capital investment impact</div>
+                    </div>
+
+                    <div class="metric-card success">
+                        <div class="metric-label">5-Year ROI</div>
+                        <div class="metric-value" id="impactFiveYearROI">16%</div>
+                        <div class="metric-delta">Long-term value positive</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">Payback Period</div>
+                        <div class="metric-value" id="paybackDisplay">52 months</div>
+                        <div class="metric-delta">When investment breaks even</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 5: Competitive -->
+        <div id="competitive" class="tab-content">
+            <div class="grid">
+                <div class="panel">
+                    <h2>Select Competitor</h2>
+                    
+                    <div class="input-group">
+                        <select class="dropdown" id="competitorSelect" onchange="updateCompetitive()">
+                            <option value="agilent" selected>Agilent 1290 Infinity</option>
+                            <option value="shimadzu">Shimadzu Nexera</option>
+                            <option value="thermo">Thermo Vanquish</option>
+                            <option value="system-x">Binary System X</option>
+                        </select>
+                    </div>
+
+                    <h3>Performance Comparison</h3>
+                    <table class="data-table" id="perfTable">
+                        <tr>
+                            <th>Metric</th>
+                            <th>Competitor</th>
+                            <th>Alliance iS</th>
+                            <th>Waters Advantage</th>
+                        </tr>
+                        <tr>
+                            <td>Sensitivity (S/N)</td>
+                            <td id="compSensitivity">950</td>
+                            <td>2308*</td>
+                            <td style="color: #4CAF50;">2.4x better</td>
+                        </tr>
+                        <tr>
+                            <td>Retention RSD</td>
+                            <td id="compRSD">0.092%</td>
+                            <td>0.053%</td>
+                            <td style="color: #4CAF50;">42% better</td>
+                        </tr>
+                        <tr>
+                            <td>Error Prevention</td>
+                            <td>0%</td>
+                            <td>40%</td>
+                            <td style="color: #4CAF50;">Exclusive</td>
+                        </tr>
+                        <tr>
+                            <td>Column Tracking</td>
+                            <td>Manual</td>
+                            <td>eConnect NFC</td>
+                            <td style="color: #4CAF50;">Automated</td>
+                        </tr>
+                        <tr>
+                            <td>Method Migration</td>
+                            <td>Manual</td>
+                            <td>iMTA (65% faster)</td>
+                            <td style="color: #4CAF50;">Automated</td>
+                        </tr>
+                    </table>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 5px;">*With Ti diffusion mixer option</p>
+                </div>
+
+                <div class="panel">
+                    <h2>Value Differentiation</h2>
+                    
+                    <div class="metric-card">
+                        <div class="metric-label">Performance Advantage</div>
+                        <div class="metric-value" id="perfAdvantage">2.4x better Sensitivity</div>
+                        <div class="metric-delta">Waters-validated superiority</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">Efficiency Advantage</div>
+                        <div class="metric-value">33% Faster</div>
+                        <div class="metric-delta">4 min vs 6 min analysis</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">Quality Advantage</div>
+                        <div class="metric-value">40% Error Prevention</div>
+                        <div class="metric-delta" id="preventionValue">Worth $0 annually</div>
+                    </div>
+
+                    <h3>Why Waters Wins</h3>
+                    <div class="response-card">
+                        <h4 id="competitorName">vs. Agilent 1290</h4>
+                        <p id="winReason">2.4x better sensitivity (2308 vs 950 S/N), 42% better precision (0.053% vs 0.092% RSD), plus exclusive 40% error prevention capability that Agilent can't match. Only Waters offers automated column tracking, fleet monitoring, and iMTA method migration.</p>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>Customer Reality:</strong> "Jennifer van Basten's lab has one system down 75% of the time with inadequate support from Agilent and Sciex" - This is why she's replacing all systems within 3 months.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 6: Objections -->
+        <div id="objections" class="tab-content">
+            <div class="panel">
+                <h2>Dynamic Objection Responses</h2>
+                
+                <div class="response-card">
+                    <h4>"Your solution is more expensive"</h4>
+                    <p id="priceObjection">Loading...</p>
+                </div>
+
+                <div class="response-card">
+                    <h4>"We don't have budget this year"</h4>
+                    <p id="budgetObjection">Loading...</p>
+                </div>
+
+                <div class="response-card">
+                    <h4>"Switching suppliers is too disruptive"</h4>
+                    <p id="disruptionObjection">Loading...</p>
+                </div>
+
+                <div class="response-card">
+                    <h4>"Current system works fine"</h4>
+                    <p id="statusQuoObjection">Loading...</p>
+                </div>
+
+                <div class="response-card">
+                    <h4>"The ROI isn't positive"</h4>
+                    <p id="roiObjection">You're right - first-year ROI is negative because this is a capital investment. But over 5 years, you save $869,000 against a $750,000 investment. That's why Waters offers financing options. Plus, with your 75% downtime, the cost of NOT upgrading is $2,100 per day in lost productivity.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 7: Stakeholders -->
+        <div id="stakeholder" class="tab-content">
+            <div class="grid">
+                <div class="panel">
+                    <h2>Stakeholder Journey Mapping</h2>
+                    <p style="margin-bottom: 15px; color: #666;">Click to set each stakeholder's current stage:</p>
+                    
+                    <div class="stakeholder-grid">
+                        <div class="stakeholder-label">Lab Manager</div>
+                        <div class="journey-stages">
+                            <button class="stage-btn" onclick="setStage('lab', 'why-change', this)">Why Change</button>
+                            <button class="stage-btn" onclick="setStage('lab', 'why-now', this)">Why Now</button>
+                            <button class="stage-btn selected" onclick="setStage('lab', 'why-you', this)">Why You</button>
+                            <button class="stage-btn" onclick="setStage('lab', 'ready', this)">Ready</button>
+                            <button class="stage-btn" onclick="setStage('lab', 'unknown', this)">Unknown</button>
+                        </div>
+                    </div>
+
+                    <div class="stakeholder-grid">
+                        <div class="stakeholder-label">CFO</div>
+                        <div class="journey-stages">
+                            <button class="stage-btn" onclick="setStage('cfo', 'why-change', this)">Why Change</button>
+                            <button class="stage-btn" onclick="setStage('cfo', 'why-now', this)">Why Now</button>
+                            <button class="stage-btn" onclick="setStage('cfo', 'why-you', this)">Why You</button>
+                            <button class="stage-btn" onclick="setStage('cfo', 'ready', this)">Ready</button>
+                            <button class="stage-btn unknown" onclick="setStage('cfo', 'unknown', this)">Unknown</button>
+                        </div>
+                    </div>
+
+                    <div class="stakeholder-grid">
+                        <div class="stakeholder-label">QA Director</div>
+                        <div class="journey-stages">
+                            <button class="stage-btn" onclick="setStage('qa', 'why-change', this)">Why Change</button>
+                            <button class="stage-btn" onclick="setStage('qa', 'why-now', this)">Why Now</button>
+                            <button class="stage-btn" onclick="setStage('qa', 'why-you', this)">Why You</button>
+                            <button class="stage-btn selected" onclick="setStage('qa', 'ready', this)">Ready</button>
+                            <button class="stage-btn" onclick="setStage('qa', 'unknown', this)">Unknown</button>
+                        </div>
+                    </div>
+
+                    <div class="stakeholder-grid">
+                        <div class="stakeholder-label">IT Manager</div>
+                        <div class="journey-stages">
+                            <button class="stage-btn selected" onclick="setStage('it', 'why-change', this)">Why Change</button>
+                            <button class="stage-btn" onclick="setStage('it', 'why-now', this)">Why Now</button>
+                            <button class="stage-btn" onclick="setStage('it', 'why-you', this)">Why You</button>
+                            <button class="stage-btn" onclick="setStage('it', 'ready', this)">Ready</button>
+                            <button class="stage-btn" onclick="setStage('it', 'unknown', this)">Unknown</button>
+                        </div>
+                    </div>
+
+                    <div class="metric-card critical">
+                        <div class="metric-label">Deal Risk Assessment</div>
+                        <div class="metric-value" id="dealRisk">High Risk</div>
+                        <div class="metric-delta" id="riskReason">CFO position unknown - CRITICAL</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>Stakeholder-Specific Strategies</h2>
+                    
+                    <div id="stakeholderStrategies">
+                        Loading...
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>Action Required:</strong> <span id="nextAction">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 8: Business Case -->
+        <div id="business-case" class="tab-content">
+            <div class="grid">
+                <div class="panel">
+                    <h2>Scenario Modeling</h2>
+                    
+                    <div class="input-group">
+                        <label>If errors increase to (per month):</label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="scenarioErrors" min="20" max="60" value="45" step="5" oninput="updateScenario()">
+                            <div class="slider-value" id="scenarioValue">45</div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card warning">
+                        <div class="metric-label">Additional Annual Cost</div>
+                        <div class="metric-value" id="scenarioCost">$0</div>
+                        <div class="metric-delta negative">vs. current error rate</div>
+                    </div>
+
+                    <h3>5-Year Total Cost of Ownership</h3>
+                    <table class="data-table">
+                        <tr>
+                            <th>Category</th>
+                            <th>Status Quo</th>
+                            <th>Alliance iS</th>
+                            <th>Savings</th>
+                        </tr>
+                        <tr>
+                            <td>Error Resolution</td>
+                            <td id="tcoErrorOld">$0</td>
+                            <td id="tcoErrorNew">$0</td>
+                            <td id="tcoErrorSave" style="color: #4CAF50;">$0</td>
+                        </tr>
+                        <tr>
+                            <td>Training Costs</td>
+                            <td id="tcoTrainOld">$0</td>
+                            <td id="tcoTrainNew">$0</td>
+                            <td id="tcoTrainSave" style="color: #4CAF50;">$0</td>
+                        </tr>
+                        <tr>
+                            <td>Method Migration</td>
+                            <td id="tcoMethodOld">$0</td>
+                            <td id="tcoMethodNew">$0</td>
+                            <td id="tcoMethodSave" style="color: #4CAF50;">$0</td>
+                        </tr>
+                        <tr>
+                            <td>Solvent & Waste</td>
+                            <td>$180,000</td>
+                            <td>$120,000</td>
+                            <td style="color: #4CAF50;">$60,000</td>
+                        </tr>
+                        <tr style="font-weight: bold; background: #f0f4f8;">
+                            <td>TOTAL (5 years)</td>
+                            <td id="tcoTotalOld">$0</td>
+                            <td id="tcoTotalNew">$0</td>
+                            <td id="tcoTotalSave" style="color: #4CAF50;">$0</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="panel">
+                    <h2>Investment Analysis</h2>
+                    
+                    <div class="metric-card">
+                        <div class="metric-label">Total Investment</div>
+                        <div class="metric-value" id="totalInvestment">$0</div>
+                        <div class="metric-delta">Based on number of systems</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">Annual Savings</div>
+                        <div class="metric-value" id="totalAnnualSavings">$0</div>
+                        <div class="metric-delta">All benefits combined</div>
+                    </div>
+
+                    <div class="metric-card critical">
+                        <div class="metric-label">First-Year ROI</div>
+                        <div class="metric-value" id="bcFirstYearROI">-77%</div>
+                        <div class="metric-delta negative">Capital investment year</div>
+                    </div>
+
+                    <div class="metric-card success">
+                        <div class="metric-label">5-Year ROI</div>
+                        <div class="metric-value" id="bcFiveYearROI">16%</div>
+                        <div class="metric-delta">Total return over 5 years</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">Payback Period</div>
+                        <div class="metric-value" id="bcPayback">52 months</div>
+                        <div class="metric-delta">Break-even point</div>
+                    </div>
+
+                    <h3>Executive Summary</h3>
+                    <div class="info-box" id="executiveSummary">
+                        Loading...
+                    </div>
+
+                    <button class="btn" onclick="alert('Report generation would export all calculations and comparisons to PDF')">
+                        Generate Executive Report
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 9: Saved Accounts -->
+        <div id="accounts" class="tab-content">
+            <div class="grid">
+                <div class="panel">
+                    <h2>Saved Account Analyses</h2>
+                    
+                    <div class="saved-accounts" id="savedAccountsList">
+                        <p style="color: #999; text-align: center;">Loading saved accounts...</p>
+                    </div>
+
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-secondary" onclick="clearAccounts()">Clear All</button>
+                        <button class="btn" onclick="exportAccounts()">Export All</button>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>Pattern Recognition</h2>
+                    
+                    <div class="info-box" id="patternAnalysis">
+                        Analyzing patterns across saved accounts...
+                    </div>
+
+                    <h3>Territory Insights</h3>
+                    <div id="territoryInsights">
+                        <div class="metric-card">
+                            <div class="metric-label">Average Deal Size</div>
+                            <div class="metric-value" id="avgDealSize">$750K</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Average Close Probability</div>
+                            <div class="metric-value" id="avgCloseProbability">72%</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Common Objections</div>
+                            <div class="metric-value" style="font-size: 1em;">ROI timing (solved with 5-yr view)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state - CENTRALIZED CALCULATION VARIABLES
+        let currentInvestment = 0;
+        let currentAnnualSavings = 0;
+        let firstYearROI = 0;
+        let fiveYearROI = 0;
+        let paybackMonths = 0;
+        
+        let stakeholderStages = {
+            lab: 'why-you',
+            cfo: 'unknown',
+            qa: 'ready',
+            it: 'why-change'
+        };
+
+        let savedAccounts = [];
+        let discoveryMode = false;
+        let discoveredRevenue = 0;
+
+        // Initialize from localStorage
+        function initializeApp() {
+            const saved = localStorage.getItem('allianceAccounts');
+            if (saved) {
+                savedAccounts = JSON.parse(saved);
+            } else {
+                // Pre-populate with demo accounts for visualization
+                savedAccounts = [
+                    {
+                        name: 'Pfizer - New Jersey QC Lab',
+                        timestamp: new Date(Date.now() - 7*24*60*60*1000).toISOString(),
+                        numLabs: '10',
+                        numSystems: '7',
+                        totalSavings: '$243,000',
+                        roi: '5-Year: 35%',
+                        urgencyScore: 'HIGH',
+                        closeProbability: '75%'
+                    },
+                    {
+                        name: 'Merck - Pennsylvania Site',
+                        timestamp: new Date(Date.now() - 14*24*60*60*1000).toISOString(),
+                        numLabs: '8',
+                        numSystems: '5',
+                        totalSavings: '$173,805',
+                        roi: '5-Year: 16%',
+                        urgencyScore: 'CRITICAL',
+                        closeProbability: '85%'
+                    },
+                    {
+                        name: 'J&J Consumer Health',
+                        timestamp: new Date(Date.now() - 21*24*60*60*1000).toISOString(),
+                        numLabs: '6',
+                        numSystems: '4',
+                        totalSavings: '$138,000',
+                        roi: '5-Year: 15%',
+                        urgencyScore: 'MEDIUM',
+                        closeProbability: '55%'
+                    }
+                ];
+                localStorage.setItem('allianceAccounts', JSON.stringify(savedAccounts));
+            }
+            updateSavedAccountsDisplay();
+            updateSavedCount();
+        }
+
+        // Discovery Mode Toggle
+        function toggleDiscovery() {
+            const toggle = document.getElementById('discoveryToggle');
+            const overlay = document.getElementById('discoveryOverlay');
+            
+            discoveryMode = !discoveryMode;
+            toggle.classList.toggle('active');
+            
+            if (discoveryMode) {
+                startDiscovery();
+                overlay.classList.add('active');
+            } else {
+                overlay.classList.remove('active');
+            }
+        }
+
+        function startDiscovery() {
+            const numSystems = parseInt(document.getElementById('numSystems').value);
+            discoveredRevenue = 150000 * numSystems;
+            updateRevenueCounter();
+            
+            setTimeout(() => addDiscoveredRevenue(30000, "Training burden discovered"), 1000);
+            setTimeout(() => addDiscoveredRevenue(45000, "Error costs uncovered"), 2000);
+            setTimeout(() => addDiscoveredRevenue(25000, "Method migration pain"), 3000);
+            setTimeout(() => addDiscoveredRevenue(60000, "Competitive risk premium"), 4000);
+        }
+
+        function addDiscoveredRevenue(amount, reason) {
+            discoveredRevenue += amount;
+            updateRevenueCounter();
+            
+            const counter = document.getElementById('revenueCounter');
+            counter.classList.add('pulse');
+            setTimeout(() => counter.classList.remove('pulse'), 500);
+        }
+
+        function updateRevenueCounter() {
+            document.getElementById('revenueCounter').textContent = '$' + discoveredRevenue.toLocaleString();
+        }
+
+        function completeDiscovery() {
+            document.getElementById('discoveryOverlay').classList.remove('active');
+            showTab('profile');
+        }
+
+        // Conversation Intelligence
+        function parseConversation() {
+            const input = document.getElementById('conversationInput').value.toLowerCase();
+            
+            if (input.includes('down') && (input.includes('75%') || input.includes('time'))) {
+                document.getElementById('competitorDowntime').value = 75;
+                document.getElementById('supportIssues').value = 'critical';
+                updateTriggers();
+            }
+            
+            if (input.includes('fda') || input.includes('audit')) {
+                document.getElementById('fdaAudit').value = '3months';
+                updateTriggers();
+            }
+            
+            if (input.includes('new') && (input.includes('cfo') || input.includes('director'))) {
+                document.getElementById('newExec').value = 'multiple';
+                updateTriggers();
+            }
+        }
+
+        // Deal Triggers Update
+        function updateTriggers() {
+            const fdaAudit = document.getElementById('fdaAudit').value;
+            const cfrDeadline = document.getElementById('cfrDeadline').value;
+            const competitorDowntime = parseInt(document.getElementById('competitorDowntime').value);
+            const supportIssues = document.getElementById('supportIssues').value;
+            const newExec = document.getElementById('newExec').value;
+            const budgetCycle = document.getElementById('budgetCycle').value;
+            
+            document.getElementById('downtimeValue').textContent = competitorDowntime + '%';
+            
+            let urgencyScore = 0;
+            let urgencyLevel = 'Low';
+            let closeProbability = 35;
+            let decisionTimeline = '6-9 months';
+            let triggers = [];
+            
+            if (fdaAudit === 'warning') {
+                urgencyScore += 50;
+                triggers.push('FDA Warning Letter requires immediate action');
+            } else if (fdaAudit === '1month') {
+                urgencyScore += 40;
+                triggers.push('FDA audit in 30 days');
+            } else if (fdaAudit === '3months') {
+                urgencyScore += 25;
+                triggers.push('FDA audit scheduled');
+            }
+            
+            if (competitorDowntime >= 75) {
+                urgencyScore += 45;
+                triggers.push('Competitor system at critical downtime threshold');
+            } else if (competitorDowntime >= 50) {
+                urgencyScore += 25;
+                triggers.push('Significant competitor reliability issues');
+            }
+            
+            if (supportIssues === 'critical') {
+                urgencyScore += 35;
+                triggers.push('Actively seeking replacement');
+            } else if (supportIssues === 'major') {
+                urgencyScore += 20;
+                triggers.push('Major support dissatisfaction');
+            }
+            
+            if (newExec !== 'no') {
+                urgencyScore += 20;
+                triggers.push('New executive mandate opportunity');
+            }
+            
+            if (budgetCycle === 'approval') {
+                urgencyScore += 30;
+                triggers.push('Budget approval window open');
+            } else if (budgetCycle === 'emergency') {
+                urgencyScore += 40;
+                triggers.push('Emergency funds available');
+            }
+            
+            if (urgencyScore >= 80) {
+                urgencyLevel = 'CRITICAL';
+                closeProbability = 85;
+                decisionTimeline = '30-60 days';
+            } else if (urgencyScore >= 60) {
+                urgencyLevel = 'HIGH';
+                closeProbability = 70;
+                decisionTimeline = '60-90 days';
+            } else if (urgencyScore >= 40) {
+                urgencyLevel = 'MEDIUM';
+                closeProbability = 55;
+                decisionTimeline = '3-6 months';
+            } else if (urgencyScore >= 20) {
+                urgencyLevel = 'MODERATE';
+                closeProbability = 45;
+                decisionTimeline = '4-7 months';
+            }
+            
+            document.getElementById('urgencyScore').textContent = urgencyLevel;
+            document.getElementById('urgencyReason').textContent = triggers[0] || 'No immediate triggers';
+            document.getElementById('closeProbability').textContent = closeProbability + '%';
+            document.getElementById('probabilityReason').textContent = urgencyLevel + ' urgency pattern';
+            document.getElementById('decisionTimeline').textContent = decisionTimeline;
+            
+            const alert = document.getElementById('triggerAlert');
+            if (urgencyScore >= 60) {
+                alert.style.display = 'block';
+                document.getElementById('triggerMessage').textContent = triggers.join(' • ');
+            } else {
+                alert.style.display = 'none';
+            }
+            
+            let actions = [];
+            if (urgencyScore >= 80) {
+                actions = [
+                    '🚨 Schedule emergency executive meeting THIS WEEK',
+                    '🚨 Prepare FDA compliance package immediately',
+                    '🚨 Get CFO approval for expedited decision',
+                    '📞 Daily follow-up cadence required'
+                ];
+            } else if (urgencyScore >= 60) {
+                actions = [
+                    '⚠️ Escalate to senior management',
+                    '⚠️ Prepare competitive displacement strategy',
+                    '📋 Fast-track demonstration and POC',
+                    '💰 Present FlexCapital financing options'
+                ];
+            } else if (urgencyScore >= 40) {
+                actions = [
+                    '📊 Build detailed business case',
+                    '🤝 Expand stakeholder engagement',
+                    '📅 Secure commitment for evaluation timeline',
+                    '💡 Highlight quick wins and ROI'
+                ];
+            } else {
+                actions = [
+                    'Continue standard engagement cadence',
+                    'Build multi-stakeholder relationships',
+                    'Gather competitive intelligence',
+                    'Document pain points for future triggers'
+                ];
+            }
+            
+            const actionHtml = actions.map(a => `<li class="${urgencyScore >= 60 ? 'urgent' : ''}">${a}</li>`).join('');
+            document.getElementById('triggerActions').innerHTML = `<ul class="action-list">${actionHtml}</ul>`;
+            
+            let talkTrack = '';
+            if (fdaAudit === 'warning') {
+                talkTrack = "I understand you received an FDA Warning Letter. Alliance iS directly addresses data integrity concerns with 40% error prevention and automated audit trails. We can have you compliant within 60 days.";
+            } else if (competitorDowntime >= 75) {
+                talkTrack = "With your current system down 75% of the time, you're losing $2,100 per day in productivity. Alliance iS customers report 99.8% uptime with our premium support. We can start migration within 30 days.";
+            } else if (newExec !== 'no') {
+                talkTrack = "New leadership often drives modernization initiatives. Alliance iS aligns perfectly with efficiency mandates - 33% faster analysis, 40% error reduction, and proven ROI in under 5 years.";
+            } else {
+                talkTrack = "Alliance iS delivers systematic improvements across your entire QC operation - reducing errors by 40%, training time by 60%, and method migration by 65%. Let's quantify the impact for your specific situation.";
+            }
+            document.getElementById('triggerTalkTrack').textContent = talkTrack;
+            
+            const pattern = urgencyScore >= 60 
+                ? `Critical triggers present: Similar accounts close in ${decisionTimeline} with ${closeProbability}% win rate. Immediate action required.`
+                : `Standard evaluation pattern: Accounts with similar profile typically take ${decisionTimeline} with ${closeProbability}% conversion rate.`;
+            document.getElementById('patternInsight').textContent = pattern;
+        }
+
+        // Tab switching
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.includes('Territory Scanner')) {
+                    btn.classList.remove('highlight');
+                }
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Territory Scanner calculations
+        function updateTerritory() {
+            const totalAccounts = parseInt(document.getElementById('totalAccounts').value);
+            const agingAccounts = parseInt(document.getElementById('agingAccounts').value);
+            const competitiveAccounts = parseInt(document.getElementById('competitiveAccounts').value);
+            const avgStakeholders = parseFloat(document.getElementById('avgStakeholders').value);
+            const cfoPenetration = parseInt(document.getElementById('cfoPenetration').value);
+            const dormantAccounts = parseInt(document.getElementById('dormantAccounts').value);
+            const avgCycleTime = parseInt(document.getElementById('avgCycleTime').value);
+            const monthsToQuota = parseInt(document.getElementById('monthsToQuota').value);
+            
+            document.getElementById('totalAccountsValue').textContent = totalAccounts;
+            document.getElementById('agingAccountsValue').textContent = agingAccounts;
+            document.getElementById('competitiveAccountsValue').textContent = competitiveAccounts;
+            document.getElementById('avgStakeholdersValue').textContent = avgStakeholders;
+            document.getElementById('cfoPenetrationValue').textContent = cfoPenetration + '%';
+            document.getElementById('dormantAccountsValue').textContent = dormantAccounts;
+            document.getElementById('avgCycleTimeValue').textContent = avgCycleTime;
+            document.getElementById('monthsToQuotaValue').textContent = monthsToQuota;
+            
+            const stakeholderScore = Math.min(100, Math.round((avgStakeholders / 6) * 100));
+            const competitiveScore = Math.max(0, Math.round(((totalAccounts - dormantAccounts) / totalAccounts) * 100));
+            const penetrationScore = Math.round(((totalAccounts - dormantAccounts) / totalAccounts) * 100);
+            const velocityScore = Math.max(0, Math.round((1 - (avgCycleTime - 3) / 9) * 100));
+            
+            updateProgressBar('stakeholder', stakeholderScore);
+            updateProgressBar('competitive', competitiveScore);
+            updateProgressBar('penetration', penetrationScore);
+            updateProgressBar('velocity', velocityScore);
+            
+            const avgDealSize = 150000;
+            const avgSystemsPerAccount = 10;
+            const territoryOpportunity = agingAccounts * avgSystemsPerAccount * avgDealSize;
+            const convertRevenue = territoryOpportunity * 0.25;
+            const annualQuota = 6000000;
+            const quotaImpact = Math.round((convertRevenue / annualQuota) * 100);
+            
+            document.getElementById('territoryOpportunity').textContent = '$' + (territoryOpportunity / 1000000).toFixed(1) + 'M';
+            document.getElementById('convertRevenue').textContent = '$' + (convertRevenue / 1000000).toFixed(1) + 'M';
+            document.getElementById('quotaImpact').textContent = quotaImpact + '% of annual quota';
+            
+            const singleThreadedAccounts = Math.round(totalAccounts * (1 - avgStakeholders/6));
+            const singleThreadRisk = singleThreadedAccounts * 3 * avgDealSize;
+            const competitiveRiskValue = competitiveAccounts * avgSystemsPerAccount * avgDealSize;
+            const dormantRiskValue = dormantAccounts * 3 * avgDealSize;
+            
+            document.getElementById('singleThreadRisk').textContent = '$' + (singleThreadRisk / 1000000).toFixed(1) + 'M';
+            document.getElementById('competitiveRisk').textContent = '$' + (competitiveRiskValue / 1000000).toFixed(1) + 'M';
+            document.getElementById('dormantRisk').textContent = '$' + (dormantRiskValue / 1000000).toFixed(1) + 'M';
+            
+            const dailyDecay = Math.round(territoryOpportunity / 365);
+            document.getElementById('dailyDecay').textContent = '$' + dailyDecay.toLocaleString();
+            
+            let gaps = [];
+            if (avgStakeholders < 3) gaps.push('• Single-threaded on ' + Math.round((3 - avgStakeholders) * 33) + '% of deals');
+            if (cfoPenetration < 30) gaps.push('• No CFO relationship on ' + (100 - cfoPenetration) + '% of accounts');
+            if (dormantAccounts > 3) gaps.push('• ' + dormantAccounts + ' accounts vulnerable to competition');
+            if (avgCycleTime > 6) gaps.push('• Sales cycle ' + (avgCycleTime - 4) + ' months longer than top performers');
+            
+            document.getElementById('criticalGaps').innerHTML = gaps.join('<br>');
+            
+            const realityCheck = `Top 20% of Alliance iS reps engage ${5}+ stakeholders per account (you: ${avgStakeholders}). 
+            They close in 4 months (you: ${avgCycleTime} months). At your current rate, you'll miss ${Math.round((avgCycleTime - 4) / avgCycleTime * 100)}% of opportunities.`;
+            document.getElementById('realityCheck').textContent = realityCheck;
+        }
+
+        function updateProgressBar(id, score) {
+            const bar = document.getElementById(id + 'Bar');
+            const scoreText = document.getElementById(id + 'Score');
+            
+            bar.style.width = score + '%';
+            scoreText.textContent = score + '%';
+            
+            bar.classList.remove('green', 'yellow');
+            if (score >= 70) {
+                bar.classList.add('green');
+                bar.textContent = 'GOOD';
+            } else if (score >= 40) {
+                bar.classList.add('yellow');
+                bar.textContent = 'NEEDS WORK';
+            } else if (score >= 20) {
+                bar.textContent = 'AT RISK';
+            } else {
+                bar.textContent = 'CRITICAL';
+            }
+        }
+
+        // Main lab calculations - CENTRALIZED ROI CALCULATION
+        function updateCalculations() {
+            const numLabs = parseInt(document.getElementById('numLabs').value);
+            const newOperators = parseFloat(document.getElementById('newOperators').value);
+            const trainingHours = parseInt(document.getElementById('trainingHours').value);
+            const errorsPerMonth = parseInt(document.getElementById('errorsPerMonth').value);
+            const hoursPerError = parseInt(document.getElementById('hoursPerError').value);
+            const methodsPerYear = parseInt(document.getElementById('methodsPerYear').value);
+            const hoursPerMethod = parseInt(document.getElementById('hoursPerMethod').value);
+            const hourlyRate = parseInt(document.getElementById('hourlyRate').value);
+            const systemAge = document.getElementById('systemAge').value;
+            const numSystems = parseInt(document.getElementById('numSystems').value);
+            
+            document.getElementById('numLabsValue').textContent = numLabs;
+            document.getElementById('newOperatorsValue').textContent = newOperators;
+            document.getElementById('trainingHoursValue').textContent = trainingHours;
+            document.getElementById('errorsPerMonthValue').textContent = errorsPerMonth;
+            document.getElementById('hoursPerErrorValue').textContent = hoursPerError;
+            document.getElementById('methodsPerYearValue').textContent = methodsPerYear;
+            document.getElementById('hoursPerMethodValue').textContent = hoursPerMethod;
+            document.getElementById('hourlyRateValue').textContent = '$' + hourlyRate;
+            document.getElementById('numSystemsValue').textContent = numSystems;
+            
+            // Calculate savings (Waters methodology)
+            const annualOperators = newOperators * 12;
+            const currentTrainingHours = annualOperators * trainingHours;
+            const allianceTrainingHours = annualOperators * 64;
+            const trainingHoursSaved = currentTrainingHours - allianceTrainingHours;
+            const trainingSavings = trainingHoursSaved * hourlyRate;
+            
+            const annualErrors = errorsPerMonth * 12;
+            const preventableErrors = annualErrors * 0.40;
+            const errorHoursSaved = preventableErrors * hoursPerError;
+            const errorSavings = errorHoursSaved * hourlyRate;
+            
+            const methodHoursCurrent = methodsPerYear * hoursPerMethod;
+            const methodHoursAlliance = methodsPerYear * hoursPerMethod * 0.35;
+            const methodHoursSaved = methodHoursCurrent - methodHoursAlliance;
+            const methodSavings = methodHoursSaved * hourlyRate;
+            
+            const solventSavings = 12000;
+            const totalSavings = trainingSavings + errorSavings + methodSavings + solventSavings;
+            
+            // CENTRALIZED ROI CALCULATIONS
+            currentInvestment = numSystems * 150000;
+            currentAnnualSavings = totalSavings;
+            
+            // First-year ROI (always negative for capital investments)
+            firstYearROI = Math.round(((currentAnnualSavings - currentInvestment) / currentInvestment) * 100);
+            
+            // 5-year ROI
+            const fiveYearSavings = currentAnnualSavings * 5;
+            const netSavings = fiveYearSavings - currentInvestment;
+            fiveYearROI = Math.round((netSavings / currentInvestment) * 100);
+            
+            // Payback period
+            paybackMonths = currentAnnualSavings > 0 ? Math.round((currentInvestment / currentAnnualSavings) * 12) : 999;
+            
+            // Update Lab Profile displays
+            document.getElementById('trainingSavings').textContent = '$' + Math.round(trainingSavings).toLocaleString();
+            document.getElementById('errorSavings').textContent = '$' + Math.round(errorSavings).toLocaleString();
+            document.getElementById('methodSavings').textContent = '$' + Math.round(methodSavings).toLocaleString();
+            document.getElementById('solventSavings').textContent = '$' + solventSavings.toLocaleString();
+            document.getElementById('totalSavings').textContent = '$' + Math.round(totalSavings).toLocaleString();
+            
+            document.getElementById('firstYearROI').textContent = firstYearROI + '%';
+            document.getElementById('firstYearROINote').textContent = firstYearROI < 0 ? 'Investment exceeds first year savings' : 'Positive return in year one';
+            document.getElementById('fiveYearROIProfile').textContent = fiveYearROI + '%';
+            
+            const benchmark = 129173;
+            const comparison = totalSavings >= benchmark ? 'Exceeds' : 'Below';
+            document.getElementById('savingsComparison').textContent = comparison + ' Waters benchmark: $129,173';
+            
+            const breakdown = `
+Training: ${annualOperators.toFixed(1)} operators × (${trainingHours} - 64) hours × $${hourlyRate} = $${Math.round(trainingSavings).toLocaleString()}
+Errors: ${errorsPerMonth}/month × 12 × 40% × ${hoursPerError} hours × $${hourlyRate} = $${Math.round(errorSavings).toLocaleString()}
+Methods: ${methodsPerYear} methods × ${hoursPerMethod} hours × 65% × $${hourlyRate} = $${Math.round(methodSavings).toLocaleString()}
+Solvent: Fixed estimate = $${solventSavings.toLocaleString()}
+TOTAL: $${Math.round(totalSavings).toLocaleString()}
+            `.trim();
+            document.getElementById('calcBreakdown').textContent = breakdown;
+            
+            // Update Impact Analysis with SAME ROI
+            document.getElementById('totalErrors').textContent = annualErrors;
+            document.getElementById('humanErrors').textContent = Math.round(annualErrors * 0.56);
+            document.getElementById('preventableErrors').textContent = Math.round(preventableErrors);
+            document.getElementById('currentTrainingDisplay').textContent = trainingHours + ' hours';
+            document.getElementById('currentMethodDisplay').textContent = hoursPerMethod + ' hours';
+            document.getElementById('totalHoursSaved').textContent = Math.round(trainingHoursSaved + errorHoursSaved + methodHoursSaved).toLocaleString();
+            
+            document.getElementById('impactFirstYearROI').textContent = firstYearROI + '%';
+            document.getElementById('impactFiveYearROI').textContent = fiveYearROI + '%';
+            document.getElementById('paybackDisplay').textContent = paybackMonths + ' months';
+            
+            // Update objections
+            updateObjections(errorsPerMonth, hoursPerError, errorSavings, trainingSavings, methodSavings, hourlyRate, systemAge);
+            
+            // Update competitive
+            document.getElementById('preventionValue').textContent = 'Worth $' + Math.round(errorSavings).toLocaleString() + ' annually';
+            
+            // Update Business Case with SAME ROI
+            updateBusinessCase(annualErrors, hoursPerError, errorSavings, trainingSavings, methodSavings);
+        }
+
+        // Update objection responses
+        function updateObjections(errorsPerMonth, hoursPerError, errorSavings, trainingSavings, methodSavings, hourlyRate, systemAge) {
+            const totalSavings = errorSavings + trainingSavings + methodSavings + 12000;
+            const monthlyLoss = Math.round(totalSavings / 12);
+            
+            const priceResponse = `With ${errorsPerMonth} errors/month costing ${hoursPerError} hours each, Alliance iS saves you $${Math.round(totalSavings).toLocaleString()} annually through error prevention ($${Math.round(errorSavings).toLocaleString()}), training efficiency ($${Math.round(trainingSavings).toLocaleString()}), method migration ($${Math.round(methodSavings).toLocaleString()}), and solvent reduction. Over 5 years, that's $${(totalSavings * 5).toLocaleString()} in savings.`;
+            document.getElementById('priceObjection').textContent = priceResponse;
+            
+            const budgetResponse = `Every month you delay costs $${monthlyLoss.toLocaleString()} in lost savings. Our FlexCHOICE program converts CapEx to OpEx. With ${paybackMonths} month payback, the savings fund the investment.`;
+            document.getElementById('budgetObjection').textContent = budgetResponse;
+            
+            const disruptionResponse = `Waters has 100+ successful migrations. Our iMTA tool reduces migration time by 65%. We'll pilot with 2 systems first. Your current training burden of ${trainingHours} hours is already disruptive - Alliance iS reduces it by 60%.`;
+            document.getElementById('disruptionObjection').textContent = disruptionResponse;
+            
+            const ageText = systemAge === 'old' ? '10+ year old' : systemAge === 'mid' ? '5-10 year old' : 'newer';
+            const statusQuoResponse = `Your ${ageText} systems can't prevent the 40% of errors Alliance iS eliminates. You're missing $${Math.round(totalSavings).toLocaleString()} in annual savings, 2x sensitivity improvements, and 33% faster analysis. With 75% downtime, staying with current systems costs you $2,100 per day.`;
+            document.getElementById('statusQuoObjection').textContent = statusQuoResponse;
+        }
+
+        // Update competitive comparison
+        function updateCompetitive() {
+            const competitor = document.getElementById('competitorSelect').value;
+            
+            const competitorData = {
+                'agilent': { name: 'Agilent 1290', sensitivity: 950, rsd: '0.092%', advantage: '2.4x better' },
+                'shimadzu': { name: 'Shimadzu Nexera', sensitivity: 1050, rsd: '0.085%', advantage: '2.2x better' },
+                'thermo': { name: 'Thermo Vanquish', sensitivity: 1100, rsd: '0.082%', advantage: '2.1x better' },
+                'system-x': { name: 'System X', sensitivity: 1117, rsd: '0.081%', advantage: '2x better' }
+            };
+            
+            const data = competitorData[competitor];
+            document.getElementById('compSensitivity').textContent = data.sensitivity;
+            document.getElementById('compRSD').textContent = data.rsd;
+            document.getElementById('perfAdvantage').textContent = data.advantage + ' Sensitivity';
+            document.getElementById('competitorName').textContent = 'vs. ' + data.name;
+            
+            const winReason = `${data.advantage} sensitivity (2308 vs ${data.sensitivity} S/N), better precision (0.053% vs ${data.rsd} RSD), plus exclusive 40% error prevention, iMTA migration (65% faster), and eConnect tracking that ${data.name} can't match.`;
+            document.getElementById('winReason').textContent = winReason;
+        }
+
+        // Stakeholder management
+        function setStage(stakeholder, stage, btn) {
+            const parent = btn.parentElement;
+            parent.querySelectorAll('.stage-btn').forEach(b => {
+                b.classList.remove('selected', 'unknown');
+            });
+            
+            if (stage === 'unknown') {
+                btn.classList.add('unknown');
+            } else {
+                btn.classList.add('selected');
+            }
+            
+            stakeholderStages[stakeholder] = stage;
+            updateStakeholderStrategies();
+        }
+
+        function updateStakeholderStrategies() {
+            const strategies = {
+                'why-change': 'Build awareness: Show error costs, efficiency gaps, competitive disadvantages using Waters data.',
+                'why-now': 'Create urgency: Emphasize daily costs of delay, compliance deadlines, competitive threats.',
+                'why-you': 'Differentiate: Focus on 2x sensitivity, 40% error prevention, exclusive capabilities.',
+                'ready': 'Reinforce: Address final concerns, confirm value, secure commitment.',
+                'unknown': 'CRITICAL: Schedule discovery meeting immediately to understand position.'
+            };
+            
+            let html = '';
+            let riskLevel = 'Low Risk';
+            let unknownCount = 0;
+            let notReadyCount = 0;
+            
+            for (let [role, stage] of Object.entries(stakeholderStages)) {
+                const roleName = {
+                    'lab': 'Lab Manager',
+                    'cfo': 'CFO',
+                    'qa': 'QA Director',
+                    'it': 'IT Manager'
+                }[role];
+                
+                if (stage === 'unknown') unknownCount++;
+                if (stage !== 'ready' && stage !== 'unknown') notReadyCount++;
+                
+                html += `
+                    <div class="response-card">
+                        <h4>${roleName} (${stage.replace('-', ' ')})</h4>
+                        <p>${strategies[stage]}</p>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('stakeholderStrategies').innerHTML = html;
+            
+            const cfoUnknown = stakeholderStages.cfo === 'unknown';
+            
+            if (cfoUnknown || unknownCount >= 2) {
+                riskLevel = 'High Risk';
+                document.getElementById('riskReason').textContent = cfoUnknown ? 'CFO position unknown - CRITICAL' : 'Multiple unknown stakeholders';
+                document.getElementById('nextAction').textContent = cfoUnknown ? 'URGENT: Map CFO position immediately' : 'Map all stakeholder positions before proceeding';
+            } else if (unknownCount === 1 || notReadyCount >= 3) {
+                riskLevel = 'Medium Risk';
+                document.getElementById('riskReason').textContent = unknownCount ? 'Knowledge gaps exist' : 'Multiple stakeholders not ready';
+                document.getElementById('nextAction').textContent = 'Address lagging stakeholders';
+            } else {
+                riskLevel = 'Low Risk';
+                document.getElementById('riskReason').textContent = 'Good stakeholder alignment';
+                document.getElementById('nextAction').textContent = 'Move toward close';
+            }
+            
+            document.getElementById('dealRisk').textContent = riskLevel;
+        }
+
+        // Scenario modeling
+        function updateScenario() {
+            const scenarioErrors = parseInt(document.getElementById('scenarioErrors').value);
+            const currentErrors = parseInt(document.getElementById('errorsPerMonth').value);
+            const hoursPerError = parseInt(document.getElementById('hoursPerError').value);
+            const hourlyRate = parseInt(document.getElementById('hourlyRate').value);
+            
+            document.getElementById('scenarioValue').textContent = scenarioErrors;
+            
+            const additionalErrors = Math.max(0, (scenarioErrors - currentErrors)) * 12;
+            const additionalHours = additionalErrors * hoursPerError;
+            const additionalCost = additionalHours * hourlyRate;
+            
+            if (scenarioErrors > currentErrors) {
+                document.getElementById('scenarioCost').textContent = '+$' + Math.round(additionalCost).toLocaleString();
+            } else {
+                document.getElementById('scenarioCost').textContent = '$0';
+            }
+        }
+
+        // Update business case with CONSISTENT ROI
+        function updateBusinessCase(annualErrors, hoursPerError, errorSavings, trainingSavings, methodSavings) {
+            const hourlyRate = parseInt(document.getElementById('hourlyRate').value);
+            
+            // 5-year calculations
+            const errorCost5Year = annualErrors * hoursPerError * hourlyRate * 5;
+            const errorCostNew5Year = errorCost5Year - (errorSavings * 5);
+            const trainCost5Year = (trainingSavings / 0.60 * 3) * 5; // Reverse calc to get original cost
+            const trainCostNew5Year = trainCost5Year - (trainingSavings * 5);
+            const methodCost5Year = (methodSavings / 0.65 * 3) * 5;
+            const methodCostNew5Year = methodCost5Year - (methodSavings * 5);
+            
+            document.getElementById('tcoErrorOld').textContent = '$' + Math.round(errorCost5Year).toLocaleString();
+            document.getElementById('tcoErrorNew').textContent = '$' + Math.round(errorCostNew5Year).toLocaleString();
+            document.getElementById('tcoErrorSave').textContent = '$' + Math.round(errorSavings * 5).toLocaleString();
+            
+            document.getElementById('tcoTrainOld').textContent = '$' + Math.round(trainCost5Year).toLocaleString();
+            document.getElementById('tcoTrainNew').textContent = '$' + Math.round(trainCostNew5Year).toLocaleString();
+            document.getElementById('tcoTrainSave').textContent = '$' + Math.round(trainingSavings * 5).toLocaleString();
+            
+            document.getElementById('tcoMethodOld').textContent = '$' + Math.round(methodCost5Year).toLocaleString();
+            document.getElementById('tcoMethodNew').textContent = '$' + Math.round(methodCostNew5Year).toLocaleString();
+            document.getElementById('tcoMethodSave').textContent = '$' + Math.round(methodSavings * 5).toLocaleString();
+            
+            const tcoTotalOld = errorCost5Year + trainCost5Year + methodCost5Year + 180000;
+            const tcoTotalNew = errorCostNew5Year + trainCostNew5Year + methodCostNew5Year + 120000;
+            const tcoTotalSave = tcoTotalOld - tcoTotalNew;
+            
+            document.getElementById('tcoTotalOld').textContent = '$' + Math.round(tcoTotalOld).toLocaleString();
+            document.getElementById('tcoTotalNew').textContent = '$' + Math.round(tcoTotalNew).toLocaleString();
+            document.getElementById('tcoTotalSave').textContent = '$' + Math.round(tcoTotalSave).toLocaleString();
+            
+            // Use CENTRALIZED ROI values
+            document.getElementById('totalInvestment').textContent = '$' + currentInvestment.toLocaleString();
+            document.getElementById('totalAnnualSavings').textContent = '$' + Math.round(currentAnnualSavings).toLocaleString();
+            document.getElementById('bcFirstYearROI').textContent = firstYearROI + '%';
+            document.getElementById('bcFiveYearROI').textContent = fiveYearROI + '%';
+            document.getElementById('bcPayback').textContent = paybackMonths + ' months';
+            
+            const summary = `Alliance iS delivers $${Math.round(currentAnnualSavings).toLocaleString()} annual savings through training efficiency, error prevention, method migration automation, and solvent reduction. With ${paybackMonths}-month payback and ${fiveYearROI}% 5-year ROI, this aligns with Waters' benchmark for similar organizations. While first-year ROI is ${firstYearROI}% (typical for capital investments), the long-term value is compelling.`;
+            document.getElementById('executiveSummary').textContent = summary;
+        }
+
+        // Save Account functionality
+        function saveAccount() {
+            const accountName = document.getElementById('accountName').value || 'Account ' + (savedAccounts.length + 1);
+            const accountData = {
+                name: accountName,
+                timestamp: new Date().toISOString(),
+                numLabs: document.getElementById('numLabs').value,
+                numSystems: document.getElementById('numSystems').value,
+                totalSavings: document.getElementById('totalSavings').textContent,
+                roi: '5-Year: ' + fiveYearROI + '%',
+                urgencyScore: document.getElementById('urgencyScore').textContent,
+                closeProbability: document.getElementById('closeProbability').textContent
+            };
+            
+            savedAccounts.push(accountData);
+            localStorage.setItem('allianceAccounts', JSON.stringify(savedAccounts));
+            updateSavedAccountsDisplay();
+            updateSavedCount();
+            
+            alert('Account saved: ' + accountName);
+        }
+
+        function updateSavedAccountsDisplay() {
+            const container = document.getElementById('savedAccountsList');
+            
+            if (savedAccounts.length === 0) {
+                container.innerHTML = '<p style="color: #999; text-align: center;">No accounts saved yet</p>';
+                return;
+            }
+            
+            const html = savedAccounts.map((account, index) => `
+                <div class="account-item" onclick="loadAccount(${index})">
+                    <div>
+                        <strong>${account.name}</strong><br>
+                        <small>${new Date(account.timestamp).toLocaleDateString()}</small>
+                    </div>
+                    <div>
+                        <strong>${account.totalSavings}</strong><br>
+                        <small>${account.closeProbability} probability</small>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = html;
+            updatePatternAnalysis();
+        }
+
+        function updatePatternAnalysis() {
+            if (savedAccounts.length < 2) {
+                document.getElementById('patternAnalysis').textContent = 'Save multiple accounts to see patterns emerge...';
+                return;
+            }
+            
+            const avgSavings = savedAccounts.reduce((sum, acc) => sum + parseInt(acc.totalSavings.replace(/\D/g, '')), 0) / savedAccounts.length;
+            const highUrgency = savedAccounts.filter(acc => acc.urgencyScore === 'HIGH' || acc.urgencyScore === 'CRITICAL').length;
+            
+            document.getElementById('patternAnalysis').innerHTML = `
+                <strong>Territory Patterns Detected:</strong><br>
+                • Average opportunity: $${Math.round(avgSavings).toLocaleString()}<br>
+                • ${highUrgency} accounts with high urgency triggers<br>
+                • Most common objection: First-year ROI negative (address with 5-year view)<br>
+                • Best close rate: Accounts with 75% downtime triggers (85%)
+            `;
+        }
+
+        function loadAccount(index) {
+            const account = savedAccounts[index];
+            alert('Loading account: ' + account.name + '\n(Full restoration would reload all saved values)');
+        }
+
+        function updateSavedCount() {
+            document.getElementById('savedCount').textContent = savedAccounts.length || '';
+        }
+
+        function clearAccounts() {
+            if (confirm('Clear all saved accounts?')) {
+                savedAccounts = [];
+                localStorage.removeItem('allianceAccounts');
+                updateSavedAccountsDisplay();
+                updateSavedCount();
+            }
+        }
+
+        function exportAccounts() {
+            alert('Export would generate comprehensive territory report with all ' + savedAccounts.length + ' accounts');
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            initializeApp();
+            updateTerritory();
+            updateCalculations();
+            updateCompetitive();
+            updateStakeholderStrategies();
+            updateScenario();
+            updateTriggers();
+        };
+    </script>
+</body>
+</html>
